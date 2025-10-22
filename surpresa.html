@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surpresa Especial para Princesa 💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .surprise-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transform: perspective(1000px) rotateX(0deg);
+            transition: transform 0.6s ease;
+            backdrop-filter: blur(10px);
+            margin: 20px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 30px 25px;
+                width: 95%;
+                margin: 10px auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px 20px;
+                width: 98%;
+                margin: 5px auto;
+                border-radius: 15px;
+                max-height: 95vh;
+            }
+            
+            .card:hover {
+                transform: perspective(1000px) rotateX(0deg);
+            }
+        }
+
+        .card:hover {
+            transform: perspective(1000px) rotateX(5deg);
+        }
+
+        .surprise-title {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .surprise-title {
+                font-size: 2.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .surprise-title {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .love-message {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #333;
+            margin: 30px 0;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .love-message {
+                font-size: 1.2em;
+                margin: 25px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .love-message {
+                font-size: 1.1em;
+                line-height: 1.6;
+                margin: 20px 0;
+            }
+        }
+
+        .interactive-heart {
+            font-size: 5em;
+            color: #e74c3c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .interactive-heart {
+                font-size: 4em;
+                margin: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .interactive-heart {
+                font-size: 3em;
+                margin: 10px;
+            }
+        }
+
+        .interactive-heart:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 20px #e74c3c);
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            font-size: 2em;
+            animation: float-around 10s infinite linear;
+        }
+
+        @keyframes float-around {
+            0% {
+                transform: translateX(-100px) translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .buttons-container {
+            margin-top: 30px;
+        }
+
+        .special-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .special-button {
+                padding: 12px 25px;
+                margin: 8px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .special-button {
+                padding: 10px 20px;
+                margin: 6px 3px;
+                font-size: 0.9em;
+                display: block;
+                width: 90%;
+                margin: 8px auto;
+            }
+        }
+
+        .special-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .memory-jar {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px dashed #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 480px) {
+            .memory-jar {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .memory-jar h3 {
+                font-size: 1.1em;
+            }
+        }
+
+        .memory-item {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            transform: rotate(-1deg);
+            transition: transform 0.3s ease;
+        }
+
+        .memory-item:nth-child(even) {
+            transform: rotate(1deg);
+        }
+
+        .memory-item:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fireworks {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: firework 1.5s ease-out forwards;
+        }
+
+        @keyframes firework {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(20);
+                opacity: 0;
+            }
+        }
+
+        /* Responsivo adicional */
+        @media (max-width: 480px) {
+            #mensagem-secreta div {
+                padding: 15px !important;
+                font-size: 0.9em;
+            }
+            
+            #mensagem-secreta h3 {
+                font-size: 1.1em !important;
+            }
+            
+            #mensagem-secreta p {
+                font-size: 1em !important;
+            }
+            
+            #jogo-carinho div {
+                padding: 15px !important;
+            }
+            
+            #jogo-carinho h3 {
+                font-size: 1em !important;
+            }
+            
+            #jogo-carinho p {
+                font-size: 0.9em !important;
+            }
+            
+            #game-area {
+                height: 100px !important;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .card {
+                padding: 20px 15px !important;
+                width: 99% !important;
+            }
+            
+            .surprise-title {
+                font-size: 1.7em !important;
+            }
+            
+            .special-button {
+                padding: 8px 15px !important;
+                font-size: 0.8em !important;
+            }
+        }
+
+        /* Melhor experiência touch */
+        @media (hover: none) and (pointer: coarse) {
+            .interactive-heart:hover {
+                transform: scale(1.1);
+            }
+            
+            .card:hover {
+                transform: perspective(1000px) rotateX(0deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements"></div>
+    
+    <div class="surprise-container">
+        <div class="card">
+            <div class="surprise-title">Surpresa Especial! 🎁</div>
+            
+            <div class="love-message">
+                Brenda, meu amor, você é a pessoa mais especial do mundo!<br>
+                Preparei algumas surpresas especiais para você... Te amo minha pricesa💕
+            </div>
+
+            <div class="interactive-heart" onclick="criarFogosArtificio()" title="Clique em mim!">
+                💖
+            </div>
+
+            <div class="memory-jar">
+                <h3>💫 Pote de Memórias Especiais 💫</h3>
+                <button class="special-button" onclick="mostrarMemoria()">
+                    Puxar uma Memória Aleatória
+                </button>
+                <div id="memoria-atual"></div>
+            </div>
+
+            <div class="buttons-container">
+                <button class="special-button" onclick="chuvaCorações()">
+                    ❤️ Chuva de Corações
+                </button>
+                <button class="special-button" onclick="mostrarMensagem()">
+                    💌 Mensagem Secreta
+                </button>
+                <button class="special-button" onclick="jogoCarinho()">
+                    🎮 Jogo do Carinho
+                </button>
+                <button class="special-button" onclick="voltarInicio()">
+                    🏠 Voltar ao Início
+                </button>
+            </div>
+
+            <div id="mensagem-secreta" class="hidden">
+                <div style="background: rgba(255, 192, 203, 0.3); padding: 20px; border-radius: 15px; margin-top: 20px;">
+                    <h3>💕 Mensagem do Coração 💕</h3>
+                    <p style="font-style: italic; font-size: 1.2em; margin-top: 15px;">
+                        "Brenda, você ilumina meus dias como ninguém consegue. 
+                        Cada momento ao seu lado é um presente que guardo no coração. 
+                        Te amo mais do que as palavras podem expressar! 
+                        Eu só nao te amo mais doque você
+                        Você é minha felicidade, minha paz, meu amor eterno! 💖✨"
+                    </p>
+                </div>
+            </div>
+
+            <div id="jogo-carinho" class="hidden">
+                <div style="background: rgba(255, 182, 193, 0.3); padding: 20px; border-radius: 15px; margin-top: 20px;">
+                    <h3 style="font-size: 1.2em;">🎮 Jogo do Carinho 🎮</h3>
+                    <p style="font-size: 1em; margin: 10px 0;">Clique nos emojis de carinho que aparecerem!</p>
+                    <div id="game-area" style="height: 120px; position: relative; border: 2px dashed #ff6b6b; border-radius: 10px; margin: 15px 0; min-height: 100px;">
+                    </div>
+                    <p style="font-size: 1.1em; font-weight: bold;">Pontuação: <span id="score">0</span> 💕</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const memorias = [
+            "Lembra quando você sorriu pela primeira vez para mim? 😊",
+            "Aquele momento em que percebi que estava apaixonado... 💕",
+            "Quando te olhei pela primeira vez de verdade na festa da SEC! 😂",
+            "O dia em que soube que você era especial demais! ✨",
+            "Quando você disse que me amava .. 💖",
+            "Aquela conversa que durou a madrugada toda! 🌙",
+            "O primeiro 'eu te amo' que trocamos... 💖",
+            "Quando dançamos juntos pela primeira vez! 💃",
+            "O momento em que percebi que queria ficar para sempre ao seu lado! 💍",
+            "Cada beijo seu que me deixa nas nuvens! ☁️💋"
+        ];
+
+        let score = 0;
+        let gameActive = false;
+
+        function mostrarMemoria() {
+            const memoriaAleatoria = memorias[Math.floor(Math.random() * memorias.length)];
+            const container = document.getElementById('memoria-atual');
+            
+            container.innerHTML = `
+                <div class="memory-item" style="animation: bounceIn 0.8s ease;">
+                    ${memoriaAleatoria}
+                </div>
+            `;
+        }
+
+        function criarFogosArtificio() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'fireworks';
+                    firework.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    firework.style.left = Math.random() * 100 + '%';
+                    firework.style.top = Math.random() * 100 + '%';
+                    document.body.appendChild(firework);
+                    
+                    setTimeout(() => {
+                        firework.remove();
+                    }, 1500);
+                }, i * 200);
+            }
+        }
+
+        function chuvaCorações() {
+            const corações = ['💖', '💕', '💗', '💓', '💝', '❤️', '🧡', '💛', '💚', '💙', '💜'];
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const coração = document.createElement('div');
+                    coração.className = 'floating-element';
+                    coração.textContent = corações[Math.floor(Math.random() * corações.length)];
+                    coração.style.left = Math.random() * 100 + '%';
+                    coração.style.animationDelay = Math.random() * 2 + 's';
+                    document.querySelector('.floating-elements').appendChild(coração);
+                    
+                    setTimeout(() => {
+                        coração.remove();
+                    }, 10000);
+                }, i * 100);
+            }
+        }
+
+        function mostrarMensagem() {
+            const mensagem = document.getElementById('mensagem-secreta');
+            mensagem.classList.toggle('hidden');
+        }
+
+        function jogoCarinho() {
+            const jogo = document.getElementById('jogo-carinho');
+            jogo.classList.toggle('hidden');
+            
+            if (!gameActive && !jogo.classList.contains('hidden')) {
+                iniciarJogo();
+            }
+        }
+
+        function iniciarJogo() {
+            gameActive = true;
+            score = 0;
+            document.getElementById('score').textContent = score;
+            
+            const gameArea = document.getElementById('game-area');
+            const emojis = ['💕', '💖', '🥰', '😘', '💋', '🌹'];
+            
+            const criarEmoji = () => {
+                if (!gameActive) return;
+                
+                const emoji = document.createElement('div');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.position = 'absolute';
+                emoji.style.left = Math.random() * 75 + '%';
+                emoji.style.top = Math.random() * 75 + '%';
+                emoji.style.fontSize = window.innerWidth <= 480 ? '1.5em' : '2em';
+                emoji.style.cursor = 'pointer';
+                emoji.style.transition = 'transform 0.2s ease';
+                emoji.style.userSelect = 'none';
+                emoji.style.touchAction = 'manipulation';
+                
+                // Suporte para touch e click
+                const handleClick = () => {
+                    score++;
+                    document.getElementById('score').textContent = score;
+                    emoji.style.transform = 'scale(1.5)';
+                    setTimeout(() => {
+                        if (emoji.parentNode) {
+                            emoji.remove();
+                        }
+                    }, 200);
+                };
+                
+                emoji.onclick = handleClick;
+                emoji.ontouchstart = (e) => {
+                    e.preventDefault();
+                    handleClick();
+                };
+                
+                gameArea.appendChild(emoji);
+                
+                setTimeout(() => {
+                    if (emoji.parentNode) {
+                        emoji.remove();
+                    }
+                }, window.innerWidth <= 480 ? 2500 : 2000);
+            };
+            
+            const gameInterval = setInterval(() => {
+                if (gameActive) {
+                    criarEmoji();
+                } else {
+                    clearInterval(gameInterval);
+                }
+            }, 1000);
+            
+            setTimeout(() => {
+                gameActive = false;
+                alert(`Parabéns, Brenda! Você fez ${score} pontos de carinho! 💕`);
+            }, 15000);
+        }
+
+        function voltarInicio() {
+            window.location.href = 'index.html';
+        }
+
+        // Criar elementos flutuantes automaticamente
+        setInterval(() => {
+            const elementos = ['⭐', '✨', '🌟', '💫', '🎈', '🎊'];
+            const elemento = document.createElement('div');
+            elemento.className = 'floating-element';
+            elemento.textContent = elementos[Math.floor(Math.random() * elementos.length)];
+            elemento.style.left = Math.random() * 100 + '%';
+            elemento.style.animationDelay = '0s';
+            elemento.style.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            
+            document.querySelector('.floating-elements').appendChild(elemento);
+            
+            setTimeout(() => {
+                elemento.remove();
+            }, 10000);
+        }, 2000);
+    </script>
+</body>
+</html>
