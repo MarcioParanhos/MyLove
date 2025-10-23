@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poema para Brenda 💖</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #ffb6b9 0%, #fae3d9 100%);
+            font-family: 'Segoe Script', cursive, Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .poema-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 30px;
+            box-shadow: 0 8px 32px #ffb6b955;
+            padding: 50px 30px;
+            max-width: 600px;
+            width: 95vw;
+            text-align: center;
+            position: relative;
+        }
+        .poema-title {
+            font-size: 2.5em;
+            color: #d63384;
+            margin-bottom: 20px;
+            font-family: 'Segoe Script', cursive;
+        }
+        .poema-text {
+            font-size: 1.3em;
+            color: #6c3483;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            font-family: 'Segoe Script', cursive;
+            min-height: 180px;
+        }
+        .assinatura {
+            font-size: 1.1em;
+            color: #d63384;
+            margin-top: 30px;
+            font-family: 'Segoe Script', cursive;
+        }
+        .voltar-btn {
+            background: linear-gradient(45deg, #d63384, #ffb6b9);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 4px 16px #d6338433;
+            transition: all 0.3s;
+        }
+        .voltar-btn:hover {
+            background: linear-gradient(45deg, #ffb6b9, #d63384);
+            transform: scale(1.05);
+        }
+        .poema-coracoes {
+            position: absolute;
+            left: 0; right: 0; top: 0; bottom: 0;
+            pointer-events: none;
+        }
+        .poema-coracao {
+            position: absolute;
+            font-size: 2em;
+            color: #d63384;
+            opacity: 0.7;
+            animation: flutuaPoema 3s linear;
+        }
+        @keyframes flutuaPoema {
+            0% { transform: translateY(0); opacity: 0.7; }
+            100% { transform: translateY(-80px); opacity: 0; }
+        }
+        @media (max-width: 600px) {
+            .poema-container { padding: 25px 8px; }
+            .poema-title { font-size: 2em; }
+            .poema-text { font-size: 1.1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="poema-container">
+        <div class="poema-title">Poema para Brenda 💖</div>
+        <div class="poema-text" id="poemaTexto"></div>
+        <div class="assinatura">Com todo meu amor, <br>Marcio Paranhos 💌</div>
+        <button class="voltar-btn" onclick="window.location.href='index.html'">Voltar ao Início</button>
+        <div class="poema-coracoes" id="poemaCoracoes"></div>
+    </div>
+    <script>
+        const poema = [
+            'Brenda, minha luz, minha flor,',
+            'Teu sorriso é o sol que me aquece,',
+            'Teu abraço é o lar onde mora meu amor,',
+            'Teus olhos, estrelas que me guiam e enaltecem.',
+            '',
+            'Cada instante contigo é poesia,',
+            'Cada toque, um verso de alegria,',
+            'Te amo além do tempo, além do dia,',
+            'Você é minha paz, minha melodia.',
+            '',
+            'Que a vida nos reserve mil primaveras,',
+            'Que o destino nos una sempre mais,',
+            'Pois ao seu lado tudo é festa, tudo é paz.',
+            '',
+            'Brenda, meu amor, minha razão de sorrir,',
+            'Prometo te fazer feliz, te proteger e te sentir.',
+            '',
+            'Te amo para sempre! 💖'
+        ];
+        let i = 0;
+        function digitarPoema() {
+            if (i < poema.length) {
+                document.getElementById('poemaTexto').innerHTML += poema[i] + '<br>';
+                i++;
+                setTimeout(digitarPoema, 700);
+            } else {
+                animarCoracoesPoema();
+            }
+        }
+        digitarPoema();
+        function animarCoracoesPoema() {
+            const coracoes = document.getElementById('poemaCoracoes');
+            for(let j=0;j<20;j++) {
+                setTimeout(()=>{
+                    const c = document.createElement('span');
+                    c.className = 'poema-coracao';
+                    c.textContent = '💖';
+                    c.style.left = (Math.random()*90+5)+'%';
+                    c.style.top = (Math.random()*80+10)+'%';
+                    c.style.fontSize = (Math.random()*1.2+1)+'em';
+                    coracoes.appendChild(c);
+                    setTimeout(()=>c.remove(),2500);
+                },j*120);
+            }
+        }
+    </script>
+</body>
+</html>

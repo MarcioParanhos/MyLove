@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recadinhos para Brenda 💌</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #f9d423 0%, #ff4e50 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        .click-btn {
+            background: linear-gradient(45deg, #ffb347, #ffcc80);
+            color: #6c3483;
+            border: none;
+            padding: 30px 60px;
+            font-size: 2em;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px #ffb34755;
+            margin-bottom: 40px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .click-btn:hover {
+            background: linear-gradient(45deg, #ffcc80, #ffb347);
+            transform: scale(1.05);
+        }
+        .postits-area {
+            position: relative;
+            width: 90vw;
+            min-height: 60vh;
+            max-width: 900px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 24px;
+        }
+        .postit {
+            background: #fff9b0;
+            border: 2px solid #ffe066;
+            box-shadow: 0 4px 16px #ffb34755;
+            border-radius: 12px;
+            padding: 22px 18px;
+            min-width: 180px;
+            max-width: 220px;
+            min-height: 80px;
+            font-size: 1.15em;
+            color: #6c3483;
+            font-family: 'Segoe Script', cursive;
+            position: relative;
+            transform: rotate(-2deg);
+            opacity: 0;
+            animation: showPostit 0.7s forwards;
+        }
+        .postit:nth-child(even) { transform: rotate(2deg); }
+        .postit:after {
+            content: '';
+            position: absolute;
+            top: 8px; right: 8px;
+            width: 18px; height: 18px;
+            background: #ffe066;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px #ffb34755;
+        }
+        @keyframes showPostit {
+            0% { opacity: 0; transform: scale(0.7) rotate(-8deg); }
+            80% { opacity: 1; transform: scale(1.05) rotate(2deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        .voltar-btn {
+            background: linear-gradient(45deg, #ff4e50, #f9d423);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 40px;
+            box-shadow: 0 4px 16px #ff4e5033;
+            transition: all 0.3s;
+        }
+        .voltar-btn:hover {
+            background: linear-gradient(45deg, #f9d423, #ff4e50);
+            transform: scale(1.05);
+        }
+        @media (max-width: 600px) {
+            .postits-area { gap: 12px; }
+            .postit { min-width: 120px; max-width: 98vw; font-size: 1em; }
+            .main-container { min-height: 60vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <button class="click-btn" id="btnPostit">Clique aqui 💌</button>
+        <div class="postits-area" id="postitsArea"></div>
+        <button class="voltar-btn" onclick="window.location.href='index.html'">Voltar ao Início</button>
+    </div>
+    <script>
+        const mensagens = [
+            'Você é a razão do meu sorriso todos os dias!',
+            'Te amo mais do que chocolate! 🍫',
+            'Seu abraço é meu lugar favorito.',
+            'Brenda, você é minha inspiração!',
+            'Com você, até segunda-feira é feliz!',
+            'Você faz meu coração bater mais forte!',
+            'Quero viver mil aventuras ao seu lado!',
+            'Seu olhar me faz acreditar no amor.',
+            'Você é meu sonho realizado!',
+            'Te amo infinitamente!',
+            'Você é minha melhor escolha!',
+            'Nada é mais lindo que seu sorriso!',
+            'Você é minha paz, minha alegria!',
+            'Quero te fazer feliz todos os dias!',
+            'Você é meu presente da vida!',
+            'Com você, tudo é mais bonito!',
+            'Você é minha poesia preferida!',
+            'Te amo para sempre, Brenda! 💖',
+        ];
+        document.getElementById('btnPostit').onclick = function() {
+            const area = document.getElementById('postitsArea');
+            area.innerHTML = '';
+            mensagens.forEach((msg, idx) => {
+                setTimeout(()=>{
+                    const p = document.createElement('div');
+                    p.className = 'postit';
+                    p.textContent = msg;
+                    area.appendChild(p);
+                }, idx*120);
+            });
+            this.disabled = true;
+            this.style.opacity = 0.6;
+        };
+    </script>
+</body>
+</html>

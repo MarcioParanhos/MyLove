@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surpresa Especial para Princesa 💖</title>
     <style>
@@ -31,8 +32,8 @@
             border-radius: 20px;
             padding: 40px;
             text-align: center;
-            max-width: 600px;
-            width: 90%;
+            max-width: 800px;
+            width: 98%;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             transform: perspective(1000px) rotateX(0deg);
             transition: transform 0.6s ease;
@@ -130,6 +131,15 @@
             transition: all 0.3s ease;
             display: inline-block;
             margin: 20px;
+            animation: pulse-heart 1.2s infinite;
+        }
+
+        @keyframes pulse-heart {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(1.18); }
+            100% { transform: scale(1); }
         }
 
         @media (max-width: 768px) {
@@ -183,13 +193,24 @@
 
         .buttons-container {
             margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px 18px;
+        }
+
+        .buttons-container .special-button {
+            flex: 1 1 220px;
+            min-width: 180px;
+
+            margin: 0;
         }
 
         .special-button {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 10px 20px;
             margin: 10px;
             border-radius: 30px;
             cursor: pointer;
@@ -198,22 +219,30 @@
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        @media (max-width: 768px) {
-            .special-button {
-                padding: 12px 25px;
-                margin: 8px;
-                font-size: 1em;
+        @media (max-width: 900px) {
+            .card {
+                max-width: 99vw;
+                width: 99vw;
+            }
+            .buttons-container .special-button {
+                min-width: 140px;
+                max-width: 220px;
+                font-size: 0.98em;
             }
         }
 
-        @media (max-width: 480px) {
-            .special-button {
-                padding: 10px 20px;
-                margin: 6px 3px;
-                font-size: 0.9em;
-                display: block;
-                width: 90%;
-                margin: 8px auto;
+        @media (max-width: 600px) {
+            .card {
+                padding: 10px 2vw;
+            }
+            .buttons-container {
+                gap: 10px 0;
+            }
+            .buttons-container .special-button {
+                min-width: 90vw;
+                max-width: 98vw;
+                width: 98vw;
+                font-size: 0.95em;
             }
         }
 
@@ -353,8 +382,8 @@
             <div class="surprise-title">Surpresa Especial! 🎁</div>
             
             <div class="love-message">
-                Brenda, meu amor, você é a pessoa mais especial do mundo!<br>
-                Preparei algumas surpresas especiais para você... Te amo minha pricesa💕
+                Minha Princesa!<br>
+                Eu te amo muito mais além do muitissimo e juro de dedinho ! <br>
             </div>
 
             <div class="interactive-heart" onclick="criarFogosArtificio()" title="Clique em mim!">
@@ -379,9 +408,21 @@
                 <button class="special-button" onclick="jogoCarinho()">
                     🎮 Jogo do Carinho
                 </button>
+                <button class="special-button" onclick="abrirPostits()">
+                    📝 Recadinhos Post-it
+                </button>
                 <button class="special-button" onclick="voltarInicio()">
                     🏠 Voltar ao Início
                 </button>
+                <button class="special-button" onclick="mostrarCartaAmor()">
+                    ✨ Carta de Amor Especial ✨
+                </button>
+            <!-- Surpresa: Carta de Amor Animada -->
+            <div id="carta-amor" class="hidden" style="margin-top:30px; background:rgba(255,255,255,0.95); border-radius:18px; box-shadow:0 8px 32px #764ba255; padding:30px 20px; position:relative; min-height:120px;">
+                <div id="carta-texto" style="font-size:1.2em; color:#764ba2; font-family:'Segoe Script',cursive; min-height:80px;"></div>
+                <div id="carta-coracoes"></div>
+                <button class="special-button" style="margin-top:20px;" onclick="fecharCartaAmor()">Fechar 💖</button>
+            </div>
             </div>
 
             <div id="mensagem-secreta" class="hidden">
@@ -410,6 +451,55 @@
     </div>
 
     <script>
+        // Surpresa: Carta de Amor Animada
+        function mostrarCartaAmor() {
+            const carta = document.getElementById('carta-amor');
+            const texto = document.getElementById('carta-texto');
+            const coracoes = document.getElementById('carta-coracoes');
+            carta.classList.remove('hidden');
+            texto.textContent = '';
+            coracoes.innerHTML = '';
+            // Esconde outras surpresas
+            document.getElementById('mensagem-secreta').classList.add('hidden');
+            document.getElementById('jogo-carinho').classList.add('hidden');
+            // Efeito de digitação
+            const msg = `Minha Pricesa,\n\nDesde que você entrou na minha vida, tudo ficou mais colorido, mais leve, mais feliz.\n\nSeu sorriso é meu sol, seu abraço é meu lar, seu olhar é meu porto seguro.\n\nEu prometo te fazer sorrir todos os dias, cuidar do seu coração e te amar cada vez mais.\n\nObrigado por ser minha inspiração, minha melhor amiga, minha paixão e meu amor.\n\nTe amo para sempre! 💖`;
+            let i = 0;
+            function digitar() {
+                if (i < msg.length) {
+                    if(msg[i] === '\\n') texto.innerHTML += '<br>';
+                    else texto.innerHTML += msg[i];
+                    i++;
+                    setTimeout(digitar, 35);
+                } else {
+                    animarCoracoes();
+                }
+            }
+            digitar();
+            function animarCoracoes() {
+                for(let j=0;j<18;j++) {
+                    setTimeout(()=>{
+                        const c = document.createElement('span');
+                        c.textContent = '💖';
+                        c.style.fontSize = (Math.random()*1.2+1)+'em';
+                        c.style.position = 'absolute';
+                        c.style.left = (Math.random()*90+5)+'%';
+                        c.style.top = (Math.random()*60+30)+'%';
+                        c.style.opacity = 0.7;
+                        c.style.animation = 'flutuaCora 2.5s ease';
+                        coracoes.appendChild(c);
+                        setTimeout(()=>c.remove(),2200);
+                    },j*120);
+                }
+            }
+        }
+        function fecharCartaAmor() {
+            document.getElementById('carta-amor').classList.add('hidden');
+        }
+        // Animação dos corações
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes flutuaCora {0%{transform:translateY(0);}100%{transform:translateY(-60px);opacity:0;}}`;
+        document.head.appendChild(style);
         const memorias = [
             "Lembra quando você sorriu pela primeira vez para mim? 😊",
             "Aquele momento em que percebi que estava apaixonado... 💕",
@@ -546,12 +636,20 @@
             
             setTimeout(() => {
                 gameActive = false;
-                alert(`Parabéns, Brenda! Você fez ${score} pontos de carinho! 💕`);
+                Swal.fire({
+                    title: 'Parabéns, Brenda!',
+                    text: `Você fez ${score} pontos de carinho! 💕`,
+                    icon: 'success',
+                    confirmButtonText: 'Amei!'
+                });
             }, 15000);
         }
 
         function voltarInicio() {
             window.location.href = 'index.html';
+        }
+        function abrirPostits() {
+            window.location.href = 'postits.html';
         }
 
         // Criar elementos flutuantes automaticamente
