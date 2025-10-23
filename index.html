@@ -186,6 +186,52 @@
                 font-size: 0.9em;
             }
         }
+
+        .main-btn {
+            background: linear-gradient(45deg, #6f42c1, #d63384);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(111, 66, 193, 0.3);
+            margin: 10px;
+            width: auto;
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .main-btn {
+                padding: 18px 35px;
+                font-size: 1.3em;
+                margin: 8px;
+                min-width: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-btn {
+                padding: 15px 25px;
+                font-size: 1.1em;
+                margin: 8px 5px;
+                min-width: 160px;
+                display: block;
+                width: 90%;
+                margin: 10px auto;
+            }
+        }
+
+        .main-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(111, 66, 193, 0.4);
+            background: linear-gradient(45deg, #d63384, #6f42c1);
+        }
+
+        .main-btn:active {
+            transform: translateY(0px);
+        }
     </style>
 </head>
 <body>
@@ -208,6 +254,9 @@
         </button>
         <button class="love-button" onclick="abrirPoema()">
             📜 Poema para Brenda 📜
+        </button>
+        <button class="main-btn" onclick="abrirJogos()">
+            🎲 Joguinhos do Amor
         </button>
     </div>
 
@@ -238,6 +287,9 @@
         }
         function abrirPoema() {
             window.location.href = 'poema.html';
+        }
+        function abrirJogos() {
+            window.location.href = 'jogos.html';
         }
 
         // Efeito de digitação no título

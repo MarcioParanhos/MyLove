@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joguinhos do Amor 💑</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .main-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px #a6c1ee55;
+            padding: 40px 24px;
+            max-width: 500px;
+            width: 98vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #a678d3;
+            font-size: 2.3em;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .game-section {
+            width: 100%;
+            margin-bottom: 32px;
+            background: #fbc2eb33;
+            border-radius: 16px;
+            padding: 18px 12px;
+            box-shadow: 0 2px 12px #fbc2eb22;
+        }
+        .game-section:last-child {
+            margin-bottom: 0;
+        }
+        .game-title {
+            font-size: 1.3em;
+            color: #a678d3;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .question {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            background: linear-gradient(45deg, #a6c1ee, #fbc2eb);
+            color: #6c3483;
+            border: none;
+            padding: 10px 18px;
+            font-size: 1em;
+            border-radius: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px #a6c1ee33;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .option-btn:hover {
+            background: linear-gradient(45deg, #fbc2eb, #a6c1ee);
+            transform: scale(1.05);
+        }
+        .result {
+            margin-top: 12px;
+            font-size: 1.1em;
+            color: #6c3483;
+            font-weight: bold;
+        }
+        .voltar-btn {
+            background: linear-gradient(45deg, #a678d3, #fbc2eb);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 1.1em;
+            border-radius: 24px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 4px 16px #a678d333;
+            transition: all 0.3s;
+        }
+        .voltar-btn:hover {
+            background: linear-gradient(45deg, #fbc2eb, #a678d3);
+            transform: scale(1.05);
+        }
+        #emoji-area {
+            height: 120px;
+            position: relative;
+            margin-top: 10px;
+        }
+        .emoji {
+            position: absolute;
+            font-size: 2em;
+            cursor: pointer;
+        }
+        @media (max-width: 600px) {
+            .main-container { padding: 18px 4vw; }
+            h1 { font-size: 1.5em; }
+            .game-title { font-size: 1.1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Joguinhos do Amor 💑</h1>
+        <div class="game-section" id="quiz-section">
+            <div class="game-title">Quiz: Quanto você conhece nosso amor?</div>
+            <div class="question" id="quiz-question"></div>
+            <div class="options" id="quiz-options"></div>
+            <div class="result" id="quiz-result"></div>
+        </div>
+        <div class="game-section" id="frase-section">
+            <div class="game-title">Monte a Frase do Amor</div>
+            <div style="margin-bottom:10px; color:#a678d3; font-weight:bold;">
+                Acertos: <span id="frase-acertos">0</span> &nbsp;|&nbsp; Erros: <span id="frase-erros">0</span>
+            </div>
+            <button class="option-btn" id="btn-comecar-frase" onclick="iniciarJogoFrase()">Começar!</button>
+            <div class="result" id="frase-result"></div>
+            <div id="frase-area" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px;"></div>
+            <div id="frase-montada" style="margin-top: 14px; font-weight: bold; color: #a678d3;"></div>
+        </div>
+        <button class="voltar-btn" onclick="window.location.href='index.html'">Voltar ao Início</button>
+    </div>
+    <script>
+        // Quiz sobre o casal
+        const quiz = [
+            {
+                pergunta: 'Onde foi nosso primeiro beijo?',
+                opcoes: ['Na festa da SEC', 'No cinema', 'Na Praia', 'No carro'],
+                resposta: 0
+            },
+            {
+                pergunta: 'Qual é a comida favorita do Marcio?',
+                opcoes: ['Pizza', 'Churrasco', 'Chocolate', 'Nhoque'],
+                resposta: 3
+            },
+            {
+                pergunta: 'Qual apelido carinhoso Brenda mais gosta?',
+                opcoes: ['Amor', 'Princesa', 'Linda', 'Mozão'],
+                resposta: 1
+            },
+            {
+                pergunta: 'Quem falou eu te amo primeiro?',
+                opcoes: ['Brenda', 'Marcio', 'Marley', 'Clarck'],
+                resposta: 0
+            },
+            {
+                pergunta: 'Qual música representa nosso amor?',
+                opcoes: ['Amor Puro - Djavan', 'Perfect - Ed Sheeran', 'Te Amo - Roupa Nova', 'Shallow - Lady Gaga'],
+                resposta: 0
+            }
+        ];
+        let quizIndex = 0;
+        let quizScore = 0;
+        function mostrarQuiz() {
+            if (quizIndex < quiz.length) {
+                document.getElementById('quiz-question').textContent = quiz[quizIndex].pergunta;
+                const optionsDiv = document.getElementById('quiz-options');
+                optionsDiv.innerHTML = '';
+                quiz[quizIndex].opcoes.forEach((op, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = op;
+                    btn.onclick = () => responderQuiz(idx);
+                    optionsDiv.appendChild(btn);
+                });
+                document.getElementById('quiz-result').textContent = '';
+            } else {
+                document.getElementById('quiz-question').textContent = '';
+                document.getElementById('quiz-options').innerHTML = '';
+                document.getElementById('quiz-result').textContent = `Parabéns, Brenda! Você acertou ${quizScore} de ${quiz.length} perguntas! 💖`;
+            }
+        }
+        function responderQuiz(idx) {
+            if (idx === quiz[quizIndex].resposta) {
+                quizScore++;
+                document.getElementById('quiz-result').textContent = 'Acertou! 😍';
+            } else {
+                document.getElementById('quiz-result').textContent = 'Quase! Tente a próxima! 😊';
+            }
+            setTimeout(() => {
+                quizIndex++;
+                mostrarQuiz();
+            }, 900);
+        }
+        mostrarQuiz();
+        // Jogo Monte a Frase do Amor
+        const frases = [
+            { frase: 'Você é meu grande amor', palavras: ['amor', 'grande', 'meu', 'é', 'Você'] },
+            { frase: 'Quero estar sempre ao seu lado', palavras: ['Quero', 'estar', 'sempre', 'ao', 'seu', 'lado'] },
+            { frase: 'Seu sorriso ilumina meus dias', palavras: ['dias', 'meus', 'ilumina', 'sorriso', 'Seu'] },
+            { frase: 'Te amo infinitamente Brenda', palavras: ['Brenda', 'infinitamente', 'amo', 'Te'] },
+            { frase: 'Você faz meus dias felizes', palavras: ['felizes', 'dias', 'meus', 'faz', 'Você'] },
+            { frase: 'Com você tudo é melhor', palavras: ['melhor', 'é', 'tudo', 'você', 'Com'] },
+            { frase: 'Seu abraço é meu lar', palavras: ['lar', 'meu', 'é', 'abraço', 'Seu'] },
+            { frase: 'Amo você para sempre', palavras: ['sempre', 'para', 'você', 'Amo'] },
+            { frase: 'Brenda é minha inspiração', palavras: ['inspiração', 'minha', 'é', 'Brenda'] },
+            { frase: 'Nosso amor é infinito', palavras: ['infinito', 'é', 'amor', 'Nosso'] },
+            { frase: 'Você é minha felicidade', palavras: ['felicidade', 'minha', 'é', 'Você'] },
+            { frase: 'Te quero em todos os momentos', palavras: ['momentos', 'os', 'todos', 'em', 'quero', 'Te'] },
+            { frase: 'Seu olhar me encanta', palavras: ['encanta', 'me', 'olhar', 'Seu'] },
+            { frase: 'Você é minha melhor escolha', palavras: ['escolha', 'melhor', 'minha', 'é', 'Você'] },
+            { frase: 'Com você sou mais feliz', palavras: ['feliz', 'mais', 'sou', 'você', 'Com'] }
+        ];
+        let fraseAcertos = 0;
+        let fraseErros = 0;
+        let ordemSelecionada = [];
+        let frasesRestantes = [];
+        function iniciarJogoFrase() {
+            document.getElementById('btn-comecar-frase').style.display = 'none';
+            if (frasesRestantes.length === 0) {
+                frasesRestantes = [...frases];
+            }
+            ordemSelecionada = [];
+            document.getElementById('frase-result').textContent = '';
+            document.getElementById('frase-montada').textContent = '';
+            document.getElementById('frase-area').innerHTML = '';
+            // Seleciona frase aleatória e remove do array para evitar repetição imediata
+            const idx = Math.floor(Math.random() * frasesRestantes.length);
+            const fraseObj = frasesRestantes.splice(idx, 1)[0];
+            window.fraseAtualObj = fraseObj; // para acesso em verificarFrase
+            const embaralhadas = [...fraseObj.palavras].sort(() => Math.random() - 0.5);
+            embaralhadas.forEach((palavra, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = palavra;
+                btn.onclick = function() {
+                    ordemSelecionada.push(palavra);
+                    btn.disabled = true;
+                    document.getElementById('frase-montada').textContent = ordemSelecionada.join(' ');
+                    if (ordemSelecionada.length === fraseObj.palavras.length) {
+                        verificarFrase();
+                    }
+                };
+                document.getElementById('frase-area').appendChild(btn);
+            });
+        }
+        function verificarFrase() {
+            const fraseCerta = window.fraseAtualObj.frase;
+            const fraseMontada = ordemSelecionada.join(' ');
+            if (fraseMontada === fraseCerta) {
+                fraseAcertos++;
+                document.getElementById('frase-result').textContent = 'Parabéns! Você montou a frase perfeita! 💖';
+            } else {
+                fraseErros++;
+                document.getElementById('frase-result').textContent = 'Quase! Tente novamente! 😊';
+            }
+            document.getElementById('frase-acertos').textContent = fraseAcertos;
+            document.getElementById('frase-erros').textContent = fraseErros;
+            if (fraseAcertos === 10) {
+                Swal.fire({
+                    title: 'Você venceu! 🏆',
+                    text: 'Parabéns, Brenda! Você montou 10 frases de amor! Seu coração é campeão! 💖',
+                    icon: 'success',
+                    confirmButtonText: 'Amei!'
+                });
+                fraseAcertos = 0;
+                fraseErros = 0;
+                document.getElementById('frase-acertos').textContent = fraseAcertos;
+                document.getElementById('frase-erros').textContent = fraseErros;
+                frasesRestantes = [...frases];
+                setTimeout(() => {
+                    document.getElementById('btn-comecar-frase').style.display = '';
+                }, 1800);
+                return;
+            }
+            if (fraseErros === 10) {
+                Swal.fire({
+                    title: 'Tente novamente!',
+                    text: 'Você errou 10 frases, mas o importante é se divertir e aprender juntos! 💞',
+                    icon: 'error',
+                    confirmButtonText: 'Continuar'
+                });
+                fraseAcertos = 0;
+                fraseErros = 0;
+                document.getElementById('frase-acertos').textContent = fraseAcertos;
+                document.getElementById('frase-erros').textContent = fraseErros;
+                frasesRestantes = [...frases];
+                setTimeout(() => {
+                    document.getElementById('btn-comecar-frase').style.display = '';
+                }, 1800);
+                return;
+            }
+            setTimeout(iniciarJogoFrase, 1600);
+        }
+    </script>
+</body>
+</html>
