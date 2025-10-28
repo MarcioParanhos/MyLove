@@ -249,7 +249,7 @@
         <div class="game-section" id="puzzle-section" data-game="puzzle" style="display:none;">
             <div class="game-title">Quebra-cabeça com Fotos</div>
             <div style="margin-bottom:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                <label style="font-weight:bold; color:#a678d3;">Imagem:</label>
+                <label style="font-weight:bold; color:#a678d3;">Selecione uma foto:</label>
                 <select id="puzzle-image-select"></select>
                 <!-- tamanho fixo em 4x4 conforme pedido -->
                 <button class="option-btn icon-btn" id="puzzle-shuffle-btn" style="display:none; padding:8px; font-size:18px; line-height:1;" title="Embaralhar" onclick="shufflePuzzle()">
@@ -559,7 +559,7 @@
             // reset puzzle UI if hiding
             if (name !== 'puzzle') {
                 const puzzleArea = document.getElementById('puzzle-area'); if (puzzleArea) puzzleArea.innerHTML = '';
-                const pbtn = document.getElementById('puzzle-start-btn'); if (pbtn) { pbtn.style.display = ''; pbtn.textContent = 'Começar Quebra-cabeça'; }
+                const pbtn = document.getElementById('puzzle-start-btn'); if (pbtn) { pbtn.style.display = ''; pbtn.textContent = 'Começar'; }
                 try { window.puzzleState = null; } catch(e){}
             }
             // cleanup confetti if present
@@ -749,14 +749,14 @@
         // ------------------ Quebra-cabeça com fotos ------------------
         (function(){
             const puzzleImages = [
-                'image/WhatsApp Image 2025-10-22 at 09.59.08.jpeg',
-                'image/WhatsApp Image 2025-10-22 at 10.02.12.jpeg',
-                'image/WhatsApp Image 2025-10-22 at 10.03.12.jpeg',
-                'image/WhatsApp Image 2025-10-22 at 10.03.57.jpeg',
-                'image/WhatsApp Image 2025-10-22 at 10.04.24.jpeg'
+                { src: 'image/WhatsApp Image 2025-10-22 at 09.59.08.jpeg', label: 'Sorriso nosso' },
+                { src: 'image/WhatsApp Image 2025-10-22 at 10.02.12.jpeg', label: 'Passeio feliz' },
+                { src: 'image/WhatsApp Image 2025-10-22 at 10.03.12.jpeg', label: 'Um dia de Praia' },
+                { src: 'image/WhatsApp Image 2025-10-22 at 10.03.57.jpeg', label: 'Passeio do nosso agrado' },
+                { src: 'image/WhatsApp Image 2025-10-22 at 10.04.24.jpeg', label: 'Pequena Alice' }
             ];
             const sel = document.getElementById('puzzle-image-select');
-            puzzleImages.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p.split('/').pop(); sel.appendChild(o); });
+            puzzleImages.forEach(p=>{ const o=document.createElement('option'); o.value=p.src; o.textContent=p.label; sel.appendChild(o); });
             // permitir trocar imagem durante o jogo: confirma reiniciar
             sel.addEventListener('change', function(){
                 if (!window.puzzleState) return; // não há jogo em andamento
@@ -770,13 +770,13 @@
                     cancelButtonText: 'Cancelar'
                 }).then(res=>{
                     if (res.isConfirmed) {
-                        // restart puzzle with new image
-                        buildPuzzle(newImg, window.puzzleState ? window.puzzleState.size : 4);
-                    } else {
-                        // revert selection back to previous image
-                        const prev = window.puzzleState ? window.puzzleState.img : puzzleImages[0];
-                        sel.value = prev;
-                    }
+                            // restart puzzle with new image
+                            buildPuzzle(newImg, window.puzzleState ? window.puzzleState.size : 4);
+                        } else {
+                            // revert selection back to previous image
+                            const prev = window.puzzleState ? window.puzzleState.img : puzzleImages[0].src;
+                            sel.value = prev;
+                        }
                 });
             });
 
