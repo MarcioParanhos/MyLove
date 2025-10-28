@@ -40,6 +40,9 @@
             padding: 18px 12px;
             box-shadow: 0 2px 12px #fbc2eb22;
         }
+        .games-menu { display:flex; gap:8px; margin-bottom:18px; }
+        .games-tab { background:#fff; border-radius:14px; padding:8px 14px; cursor:pointer; box-shadow:0 4px 12px #00000011; border:2px solid transparent; }
+        .games-tab.active { border-color:#a678d3; background:linear-gradient(45deg,#fbe9ff,#e6f0ff); }
         .game-section:last-child {
             margin-bottom: 0;
         }
@@ -58,6 +61,24 @@
             flex-direction: column;
             gap: 10px;
         }
+        .quiz-top {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:10px;
+        }
+        .progress {
+            height:8px;
+            background:#eee;
+            border-radius:8px;
+            overflow:hidden;
+            flex:1;
+            margin-left:12px;
+            margin-right:12px;
+        }
+        .progress-fill { height:100%; width:0%; background: linear-gradient(90deg,#ffd1dc,#ffc1a6); transition:width 0.3s ease; }
+        .option-btn.correct { background: linear-gradient(45deg,#b7ffb3,#7ef0a6); color:#064; }
+        .option-btn.wrong { background: linear-gradient(45deg,#ffb3b3,#ff7a7a); color:#600; }
         .option-btn {
             background: linear-gradient(45deg, #a6c1ee, #fbc2eb);
             color: #6c3483;
@@ -74,6 +95,84 @@
             background: linear-gradient(45deg, #fbc2eb, #a6c1ee);
             transform: scale(1.05);
         }
+        .puzzle-tile {
+            position: relative;
+            transition: transform 220ms ease, box-shadow 220ms ease, outline 120ms ease, background-position 320ms ease;
+            border-radius: 8px;
+            overflow: hidden;
+            will-change: transform, background-position;
+        }
+        .puzzle-tile::after{
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            pointer-events: none;
+            transition: box-shadow 220ms ease, opacity 220ms ease;
+            opacity: 0;
+        }
+        .puzzle-tile.selected {
+            z-index: 3;
+            transform: scale(1.12) translateZ(0);
+            box-shadow: 0 18px 36px rgba(166,193,238,0.38);
+            animation: puzzlePulse 900ms ease-in-out;
+        }
+        .puzzle-tile.selected::after{
+            box-shadow: 0 0 40px 10px rgba(255,150,180,0.22);
+            opacity: 1;
+        }
+        @keyframes puzzlePulse { 0%{ transform: scale(1.04);}50%{ transform: scale(1.09);}100%{ transform: scale(1.07);} }
+
+        /* prettier buttons */
+        .option-btn {
+            background: linear-gradient(90deg,#ffb6d5 0%, #b7d4ff 100%);
+            color: #3a1f4a;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 18px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(102,51,153,0.12);
+            transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+            font-weight: 700;
+        }
+        .option-btn:hover { transform: translateY(-3px); box-shadow: 0 18px 36px rgba(102,51,153,0.18); filter: brightness(1.03); }
+        .option-btn:active { transform: translateY(-1px) scale(0.995); }
+        .option-btn.primary {
+            background: linear-gradient(90deg,#9b5fe0 0%, #ff7ab6 100%);
+            color: #fff;
+            box-shadow: 0 18px 40px rgba(155,95,224,0.22);
+            padding: 11px 18px;
+        }
+        .option-btn.primary:hover { filter: brightness(1.04); }
+        /* small icon-style button next to selects */
+        .icon-btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:8px;
+            background: linear-gradient(180deg,#ffffff,#f3e8ff);
+            border: 1px solid #e6d6ff;
+            box-shadow: 0 4px 12px rgba(102,51,153,0.08);
+            cursor:pointer;
+            transition: transform .12s ease, box-shadow .12s ease;
+            padding:6px 8px;
+        }
+        .icon-btn:hover{ transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,51,153,0.12); }
+        .icon-btn:active{ transform: translateY(0); }
+        /* make the puzzle image select match the compact icon button visually */
+        #puzzle-image-select{
+            height:36px;
+            padding:6px 8px;
+            border-radius:8px;
+            border: 1px solid #e6d6ff;
+            background: linear-gradient(180deg,#ffffff,#faf6ff);
+            box-shadow: 0 4px 12px rgba(102,51,153,0.06);
+            font-weight:600;
+            color:#3a1f4a;
+            min-width:160px;
+            align-self:center;
+        }
+        @media (max-width:600px){ #puzzle-image-select{ min-width:120px; } }
         .result {
             margin-top: 12px;
             font-size: 1.1em;
@@ -116,25 +215,132 @@
 <body>
     <div class="main-container">
         <h1>Joguinhos do Amor 💑</h1>
-        <div class="game-section" id="quiz-section">
+        <div class="games-menu" id="games-menu">
+            <div class="games-tab active" data-game="quiz" onclick="showGame('quiz')">Quiz</div>
+            <div class="games-tab" data-game="frase" onclick="showGame('frase')">Monte a Frase</div>
+            <div class="games-tab" data-game="puzzle" onclick="showGame('puzzle')">Quebra-cabeça</div>
+            <!-- futuras abas -->
+            </div>
+        <div class="game-section" id="quiz-section" data-game="quiz">
             <div class="game-title">Quiz: Quanto você conhece nosso amor?</div>
             <div class="question" id="quiz-question"></div>
             <div class="options" id="quiz-options"></div>
             <div class="result" id="quiz-result"></div>
         </div>
-        <div class="game-section" id="frase-section">
+        <div class="game-section" id="frase-section" data-game="frase" style="display:none;">
             <div class="game-title">Monte a Frase do Amor</div>
             <div style="margin-bottom:10px; color:#a678d3; font-weight:bold;">
                 Acertos: <span id="frase-acertos">0</span> &nbsp;|&nbsp; Erros: <span id="frase-erros">0</span>
             </div>
-            <button class="option-btn" id="btn-comecar-frase" onclick="iniciarJogoFrase()">Começar!</button>
+            <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px; flex-wrap:wrap;">
+                <button class="option-btn" id="btn-comecar-frase" onclick="startFraseGame()">Começar!</button>
+                <!-- dica removida -->
+                <div style="flex:1; min-width:160px;">
+                    <div style="height:10px; background:#eee; border-radius:8px; overflow:hidden;">
+                        <div id="barra-tempo" style="height:100%; width:100%; background:linear-gradient(90deg,#ff9a9e,#fad0c4);"></div>
+                    </div>
+                </div>
+                <div style="min-width:120px; text-align:right; color:#a678d3; font-weight:bold;">Tempo: <span id="tempo-restante">--</span>s</div>
+            </div>
             <div class="result" id="frase-result"></div>
             <div id="frase-area" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px;"></div>
             <div id="frase-montada" style="margin-top: 14px; font-weight: bold; color: #a678d3;"></div>
         </div>
+        <div class="game-section" id="puzzle-section" data-game="puzzle" style="display:none;">
+            <div class="game-title">Quebra-cabeça com Fotos</div>
+            <div style="margin-bottom:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <label style="font-weight:bold; color:#a678d3;">Imagem:</label>
+                <select id="puzzle-image-select"></select>
+                <!-- tamanho fixo em 4x4 conforme pedido -->
+                <button class="option-btn icon-btn" id="puzzle-shuffle-btn" style="display:none; padding:8px; font-size:18px; line-height:1;" title="Embaralhar" onclick="shufflePuzzle()">
+                    <!-- SVG fornecido pelo usuário -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-replace" aria-hidden="true">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M8 2h-4a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2z" />
+                        <path d="M20 14h-4a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2z" />
+                        <path d="M16.707 2.293a1 1 0 0 1 .083 1.32l-.083 .094l-1.293 1.293h3.586a3 3 0 0 1 2.995 2.824l.005 .176v3a1 1 0 0 1 -1.993 .117l-.007 -.117v-3a1 1 0 0 0 -.883 -.993l-.117 -.007h-3.585l1.292 1.293a1 1 0 0 1 -1.32 1.497l-.094 -.083l-3 -3a.98 .98 0 0 1 -.28 -.872l.036 -.146l.04 -.104c.058 -.126 .14 -.24 .245 -.334l2.959 -2.958a1 1 0 0 1 1.414 0z" />
+                        <path d="M3 12a1 1 0 0 1 .993 .883l.007 .117v3a1 1 0 0 0 .883 .993l.117 .007h3.585l-1.292 -1.293a1 1 0 0 1 -.083 -1.32l.083 -.094a1 1 0 0 1 1.32 -.083l.094 .083l3 3a.98 .98 0 0 1 .28 .872l-.036 .146l-.04 .104a1.02 1.02 0 0 1 -.245 .334l-2.959 2.958a1 1 0 0 1 -1.497 -1.32l.083 -.094l1.291 -1.293h-3.584a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-3a1 1 0 0 1 1 -1z" />
+                    </svg>
+                </button>
+                <button class="option-btn" id="puzzle-start-btn" style="padding:8px 12px; font-size:0.95em;" onclick="startPuzzle()">Começar</button>
+            </div>
+            <div id="puzzle-area" style="display:grid; gap:4px; justify-items:stretch;"></div>
+            <div class="result" id="puzzle-result"></div>
+        </div>
         <button class="voltar-btn" onclick="window.location.href='index.html'">Voltar ao Início</button>
     </div>
     <script>
+        /* ---------- Efeitos visuais (confetti & shake) - sem sons ---------- */
+
+        // confetti simples em canvas (sem libs externas)
+        let confettiCanvas, confettiCtx, confettiPieces = [], confettiAnim = null;
+        function ensureConfetti(){
+            if (confettiCanvas) return;
+            confettiCanvas = document.createElement('canvas');
+            confettiCanvas.style.position = 'fixed';
+            confettiCanvas.style.left = '0'; confettiCanvas.style.top = '0';
+            confettiCanvas.style.pointerEvents = 'none';
+            confettiCanvas.style.zIndex = 9999;
+            document.body.appendChild(confettiCanvas);
+            confettiCtx = confettiCanvas.getContext('2d');
+            resizeConfetti();
+            window.addEventListener('resize', resizeConfetti);
+        }
+        function resizeConfetti(){
+            if (!confettiCanvas) return;
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        function spawnConfetti(opts){
+            // opts: { count, scale, duration }
+            const cfg = Object.assign({ count: 80, scale: 1.0, duration: 3000 }, (typeof opts === 'number' ? {count:opts} : (opts||{})));
+            ensureConfetti();
+            confettiPieces = [];
+            const colors = ['#ffd166','#ef476f','#06d6a0','#118ab2','#f78fb3','#a678d3'];
+            for(let i=0;i<cfg.count;i++){
+                const baseR = 6 + Math.random()*8;
+                confettiPieces.push({
+                    x: Math.random()*confettiCanvas.width,
+                    y: -10 - Math.random()*confettiCanvas.height*0.2,
+                    r: baseR * (0.8 + Math.random()*0.9) * cfg.scale,
+                    dX: -2 + Math.random()*4,
+                    dY: 1 + Math.random()*3 * (0.8 + Math.random()*0.8),
+                    rot: Math.random()*360,
+                    dr: -5 + Math.random()*10,
+                    color: colors[Math.floor(Math.random()*colors.length)]
+                });
+            }
+            if (confettiAnim) cancelAnimationFrame(confettiAnim);
+            confettiLoop();
+            // parar após cfg.duration ms
+            setTimeout(()=>{ if (confettiAnim) { cancelAnimationFrame(confettiAnim); confettiAnim=null; clearConfetti(); } }, cfg.duration);
+        }
+        function confettiLoop(){
+            confettiCtx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+            for(const p of confettiPieces){
+                p.x += p.dX; p.y += p.dY; p.rot += p.dr;
+                confettiCtx.save();
+                confettiCtx.translate(p.x,p.y);
+                confettiCtx.rotate(p.rot * Math.PI/180);
+                confettiCtx.fillStyle = p.color;
+                confettiCtx.fillRect(-p.r/2, -p.r/2, p.r, p.r*1.6);
+                confettiCtx.restore();
+            }
+            confettiAnim = requestAnimationFrame(confettiLoop);
+        }
+        function clearConfetti(){ if (confettiCtx) confettiCtx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height); }
+
+        // efeito de 'shake' em um elemento
+        function shakeElement(el){
+            if (!el) return;
+            el.animate([
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(-8px)' },
+                { transform: 'translateX(8px)' },
+                { transform: 'translateX(0)' }
+            ], { duration: 520, iterations: 1, easing: 'ease-out' });
+        }
+
         // Quiz sobre o casal
         const quiz = [
             {
@@ -163,40 +369,203 @@
                 resposta: 0
             }
         ];
+        // Enhanced Quiz
+        let quizOrder = [];
         let quizIndex = 0;
         let quizScore = 0;
-        function mostrarQuiz() {
-            if (quizIndex < quiz.length) {
-                document.getElementById('quiz-question').textContent = quiz[quizIndex].pergunta;
-                const optionsDiv = document.getElementById('quiz-options');
-                optionsDiv.innerHTML = '';
-                quiz[quizIndex].opcoes.forEach((op, idx) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.textContent = op;
-                    btn.onclick = () => responderQuiz(idx);
-                    optionsDiv.appendChild(btn);
-                });
-                document.getElementById('quiz-result').textContent = '';
-            } else {
-                document.getElementById('quiz-question').textContent = '';
-                document.getElementById('quiz-options').innerHTML = '';
-                document.getElementById('quiz-result').textContent = `Parabéns, Brenda! Você acertou ${quizScore} de ${quiz.length} perguntas! 💖`;
-            }
+        const BEST_KEY = 'brenda_quiz_best';
+    let quizTimer = null;
+    let quizTimeTotal = 12; // segundos por pergunta
+    let quizTimeLeft = 0;
+
+        function shuffle(arr) { return arr.sort(() => Math.random()-0.5); }
+
+        function startQuiz() {
+            quizScore = 0;
+            quizIndex = 0;
+            quizOrder = shuffle(quiz.map((q,i)=>i));
+            renderQuizQuestion();
+            updateProgress();
         }
-        function responderQuiz(idx) {
-            if (idx === quiz[quizIndex].resposta) {
+
+        function renderQuizQuestion() {
+            const qIdx = quizOrder[quizIndex];
+            const q = quiz[qIdx];
+            document.getElementById('quiz-question').textContent = q.pergunta;
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            const shuffledOpts = shuffle(q.opcoes.map((o,i)=>({text:o,idx:i})));
+            shuffledOpts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                btn.onclick = () => handleQuizAnswer(btn, opt.idx, q.resposta);
+                optionsDiv.appendChild(btn);
+            });
+            document.getElementById('quiz-result').textContent = '';
+            updateProgress();
+            startQuizTimer();
+        }
+
+        function handleQuizAnswer(btn, chosenIdx, correctIdx) {
+            // disable options
+            Array.from(document.getElementById('quiz-options').children).forEach(b=>b.disabled=true);
+            stopQuizTimer();
+            if (chosenIdx === correctIdx) {
                 quizScore++;
-                document.getElementById('quiz-result').textContent = 'Acertou! 😍';
+                // mensagem especial ao atingir 5 acertos (somente se NÃO for perfeição total)
+                if (quizScore === 5 && quizScore < quiz.length) {
+                    Swal.fire({
+                        title: 'Uau! 5 acertos! 🌟',
+                        html: 'Você está arrasando, Brenda! Aqui vai um beijo virtual 😘',
+                        icon: 'success',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+                }
+                btn.classList.add('correct');
             } else {
-                document.getElementById('quiz-result').textContent = 'Quase! Tente a próxima! 😊';
+                btn.classList.add('wrong');
+                // highlight correct
+                const qIdx = quizOrder[quizIndex];
+                const correctText = quiz[qIdx].opcoes[correctIdx];
+                Array.from(document.getElementById('quiz-options').children).forEach(b=>{
+                    if (b.textContent === correctText) b.classList.add('correct');
+                });
             }
+            document.getElementById('quiz-result').textContent = chosenIdx === correctIdx ? 'Acertou! 😍' : 'Quase! 😊';
             setTimeout(() => {
                 quizIndex++;
-                mostrarQuiz();
+                if (quizIndex < quizOrder.length) renderQuizQuestion();
+                else finishQuiz();
             }, 900);
         }
-        mostrarQuiz();
+
+        function startQuizTimer() {
+            stopQuizTimer();
+            quizTimeLeft = quizTimeTotal;
+            const fill = document.querySelector('.quiz-top .progress-fill');
+            if (fill) fill.style.width = '100%';
+            quizTimer = setInterval(()=>{
+                quizTimeLeft -= 0.2;
+                if (fill) fill.style.width = Math.max(0, (quizTimeLeft/quizTimeTotal)*100) + '%';
+                if (quizTimeLeft <= 0) {
+                    stopQuizTimer();
+                    // marcar como erro e avançar
+                    Array.from(document.getElementById('quiz-options').children).forEach(b=>b.disabled=true);
+                    // destacar correto
+                    const qIdx = quizOrder[quizIndex];
+                    const correctText = quiz[qIdx].opcoes[quiz[qIdx].resposta];
+                    Array.from(document.getElementById('quiz-options').children).forEach(b=>{
+                        if (b.textContent === correctText) b.classList.add('correct');
+                    });
+                    document.getElementById('quiz-result').textContent = 'Tempo esgotado! ⏳';
+                    setTimeout(()=>{
+                        quizIndex++;
+                        if (quizIndex < quizOrder.length) renderQuizQuestion();
+                        else finishQuiz();
+                    },900);
+                }
+            },200);
+        }
+
+        function stopQuizTimer(){ if (quizTimer) { clearInterval(quizTimer); quizTimer=null; } }
+
+        function updateProgress() {
+            const total = quiz.length;
+            const pct = Math.round((quizIndex / total) * 100);
+            const fill = document.querySelector('.progress-fill');
+            if (fill) fill.style.width = pct + '%';
+            // show count
+            const top = document.querySelector('#quiz-section .quiz-top');
+            if (top) {
+                top.querySelector('.count').textContent = `${quizIndex+1}/${total}`;
+            }
+        }
+
+        function finishQuiz() {
+            const best = parseInt(localStorage.getItem(BEST_KEY) || '0',10);
+            if (quizScore > best) localStorage.setItem(BEST_KEY, quizScore);
+            if (quizScore === quiz.length) {
+                // celebration (mais confetti, maior)
+                spawnConfetti({ count: 160, scale: 1.4, duration: 4200 });
+                Swal.fire({
+                    title: 'Perfeição! 🌹',
+                    html: `Uau, você acertou todas as perguntas! Eu te amo muito, Brenda! 💖`,
+                    icon: 'success',
+                    confirmButtonText: 'Você é incrível!'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Resumo do Quiz',
+                    html: `Você acertou <b>${quizScore}</b> de <b>${quiz.length}</b> perguntas!<br>Seu melhor: <b>${Math.max(best,quizScore)}</b>`,
+                    icon: 'info',
+                    confirmButtonText: 'Legal!'
+                });
+            }
+            // reset UI
+            document.getElementById('quiz-question').textContent = '';
+            document.getElementById('quiz-options').innerHTML = '';
+            document.getElementById('quiz-result').textContent = '';
+            const fill = document.querySelector('.progress-fill'); if (fill) fill.style.width = '0%';
+            stopQuizTimer();
+            // reset start button label
+            const btn = document.getElementById('quiz-start-btn'); if (btn) btn.textContent = 'Iniciar Quiz';
+        }
+
+        // add quiz header with progress dynamically (start controlled by user)
+        (function addQuizHeader(){
+            const section = document.getElementById('quiz-section');
+            const hdr = document.createElement('div'); hdr.className='quiz-top';
+            hdr.innerHTML = `<div class="count">0/${quiz.length}</div><div class="progress"><div class="progress-fill"></div></div><button id="quiz-start-btn" class="option-btn" onclick="beginQuiz()">Iniciar Quiz</button>`;
+            section.insertBefore(hdr, section.firstChild);
+        })();
+
+        // beginQuiz: chamado pelo botão para iniciar/reiniciar o quiz
+        function beginQuiz(){
+            const btn = document.getElementById('quiz-start-btn');
+            if (!btn) return;
+            // change label to Reiniciar enquanto o quiz estiver ativo
+            btn.textContent = 'Reiniciar Quiz';
+            startQuiz();
+        }
+        
+        // showGame: alterna visibilidade entre seções de jogos
+        function showGame(name){
+            // hide all game sections
+            document.querySelectorAll('.game-section[data-game]').forEach(s=>{
+                s.style.display = s.getAttribute('data-game')===name ? '' : 'none';
+            });
+            // update tabs
+            document.querySelectorAll('.games-tab').forEach(t=>{
+                t.classList.toggle('active', t.getAttribute('data-game')===name);
+            });
+            // stop timers from both games to be safe
+            stopQuizTimer();
+            if (typeof fraseTimer !== 'undefined' && fraseTimer) { clearInterval(fraseTimer); fraseTimer=null; }
+            // reset quiz UI if hiding
+            if (name !== 'quiz') {
+                document.getElementById('quiz-question').textContent = '';
+                document.getElementById('quiz-options').innerHTML = '';
+                document.getElementById('quiz-result').textContent = '';
+                const btn = document.getElementById('quiz-start-btn'); if (btn) btn.textContent = 'Iniciar Quiz';
+            }
+            // reset frase UI if hiding
+            if (name !== 'frase') {
+                document.getElementById('frase-area').innerHTML = '';
+                if (typeof fraseTimer !== 'undefined' && fraseTimer) { clearInterval(fraseTimer); fraseTimer=null; }
+                document.getElementById('btn-comecar-frase').style.display = '';
+            }
+            // reset puzzle UI if hiding
+            if (name !== 'puzzle') {
+                const puzzleArea = document.getElementById('puzzle-area'); if (puzzleArea) puzzleArea.innerHTML = '';
+                const pbtn = document.getElementById('puzzle-start-btn'); if (pbtn) { pbtn.style.display = ''; pbtn.textContent = 'Começar Quebra-cabeça'; }
+                try { window.puzzleState = null; } catch(e){}
+            }
+            // cleanup confetti if present
+            if (confettiAnim) { cancelAnimationFrame(confettiAnim); confettiAnim = null; }
+            if (confettiCanvas) { try { confettiCanvas.remove(); } catch(e){} confettiCanvas=null; confettiCtx=null; confettiPieces=[]; }
+        }
         // Jogo Monte a Frase do Amor
         const frases = [
             { frase: 'Você é meu grande amor', palavras: ['amor', 'grande', 'meu', 'é', 'Você'] },
@@ -213,14 +582,28 @@
             { frase: 'Te quero em todos os momentos', palavras: ['momentos', 'os', 'todos', 'em', 'quero', 'Te'] },
             { frase: 'Seu olhar me encanta', palavras: ['encanta', 'me', 'olhar', 'Seu'] },
             { frase: 'Você é minha melhor escolha', palavras: ['escolha', 'melhor', 'minha', 'é', 'Você'] },
-            { frase: 'Com você sou mais feliz', palavras: ['feliz', 'mais', 'sou', 'você', 'Com'] }
+            { frase: 'Com você sou mais feliz', palavras: ['feliz', 'mais', 'sou', 'você', 'Com'] },
+            { frase: 'Você é minha princesa linda', palavras: ['linda', 'é', 'Você', 'pricesa'] }
         ];
-        let fraseAcertos = 0;
+    let fraseAcertos = 0;
         let fraseErros = 0;
         let ordemSelecionada = [];
         let frasesRestantes = [];
+        let fraseTimer = null;
+    let tempoTotal = 10; // segundos iniciais
+        let tempoAtual = 0;
+        let dicaUsada = false;
+    let fraseGameRunning = false; // bloqueia execuções automáticas até o usuário iniciar
         function iniciarJogoFrase() {
+            if (!fraseGameRunning) return; // segurança: só roda se o jogo estiver ativo
+            // esconder botão iniciar
             document.getElementById('btn-comecar-frase').style.display = 'none';
+            dicaUsada = false;
+            // ajustar dificuldade conforme acertos
+            tempoTotal = Math.max(4, 10 - Math.floor(fraseAcertos / 2)); // diminui o tempo a cada 2 acertos (base 10s, mínimo 4s)
+            // número de decoys aumenta com acertos
+            const decoysCount = Math.min(4, Math.floor(fraseAcertos / 3));
+
             if (frasesRestantes.length === 0) {
                 frasesRestantes = [...frases];
             }
@@ -232,7 +615,16 @@
             const idx = Math.floor(Math.random() * frasesRestantes.length);
             const fraseObj = frasesRestantes.splice(idx, 1)[0];
             window.fraseAtualObj = fraseObj; // para acesso em verificarFrase
-            const embaralhadas = [...fraseObj.palavras].sort(() => Math.random() - 0.5);
+
+            // criar palavras com decoys
+            const decoysPool = ['luz','doce','vento','mar','noite','sorriso','brilho','sonho','dois','mel'];
+            let palavras = [...fraseObj.palavras];
+            for (let i=0;i<decoysCount;i++) {
+                const d = decoysPool[Math.floor(Math.random()*decoysPool.length)];
+                palavras.push(d);
+            }
+
+            const embaralhadas = palavras.sort(() => Math.random() - 0.5);
             embaralhadas.forEach((palavra, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
@@ -242,12 +634,42 @@
                     btn.disabled = true;
                     document.getElementById('frase-montada').textContent = ordemSelecionada.join(' ');
                     if (ordemSelecionada.length === fraseObj.palavras.length) {
+                        clearInterval(fraseTimer);
                         verificarFrase();
                     }
                 };
                 document.getElementById('frase-area').appendChild(btn);
             });
+
+            // iniciar temporizador visual
+            tempoAtual = tempoTotal;
+            updateBarraTempo();
+            if (fraseTimer) clearInterval(fraseTimer);
+            fraseTimer = setInterval(() => {
+                tempoAtual -= 0.2;
+                if (tempoAtual <= 0) {
+                    clearInterval(fraseTimer);
+                    fraseTimer = null;
+                    // tempo esgotado -> erro
+                    fraseErros++;
+                    document.getElementById('frase-result').textContent = 'Tempo esgotado! 😅';
+                    document.getElementById('frase-erros').textContent = fraseErros;
+                    checkFim();
+                    setTimeout(() => { if (fraseGameRunning) iniciarJogoFrase(); }, 1200);
+                } else {
+                    updateBarraTempo();
+                }
+            }, 200);
         }
+
+        function updateBarraTempo() {
+            const pct = Math.max(0, (tempoAtual / tempoTotal) * 100);
+            document.getElementById('barra-tempo').style.width = pct + '%';
+            document.getElementById('tempo-restante').textContent = Math.ceil(tempoAtual);
+        }
+
+        // dica removida - o jogo agora usa apenas o timer
+
         function verificarFrase() {
             const fraseCerta = window.fraseAtualObj.frase;
             const fraseMontada = ordemSelecionada.join(' ');
@@ -260,7 +682,19 @@
             }
             document.getElementById('frase-acertos').textContent = fraseAcertos;
             document.getElementById('frase-erros').textContent = fraseErros;
+            checkFim();
+            // continua o jogo automaticamente
+            setTimeout(() => {
+                if (fraseTimer) { clearInterval(fraseTimer); fraseTimer = null; }
+                if (fraseGameRunning) iniciarJogoFrase();
+            }, 900);
+        }
+
+        function checkFim() {
             if (fraseAcertos === 10) {
+                if (fraseTimer) { clearInterval(fraseTimer); fraseTimer = null; }
+                // celebration (mais confetti, maior)
+                spawnConfetti({ count: 140, scale: 1.3, duration: 4200 });
                 Swal.fire({
                     title: 'Você venceu! 🏆',
                     text: 'Parabéns, Brenda! Você montou 10 frases de amor! Seu coração é campeão! 💖',
@@ -272,12 +706,15 @@
                 document.getElementById('frase-acertos').textContent = fraseAcertos;
                 document.getElementById('frase-erros').textContent = fraseErros;
                 frasesRestantes = [...frases];
-                setTimeout(() => {
-                    document.getElementById('btn-comecar-frase').style.display = '';
-                }, 1800);
-                return;
-            }
-            if (fraseErros === 10) {
+                // dica removida
+                // parar o jogo até o usuário iniciar novamente
+                fraseGameRunning = false;
+                setTimeout(() => { document.getElementById('btn-comecar-frase').style.display = ''; }, 1800);
+            } else if (fraseErros === 10) {
+                if (fraseTimer) { clearInterval(fraseTimer); fraseTimer = null; }
+                // loss feedback (visual)
+                // pequeno shake na área de resultado
+                shakeElement(document.getElementById('frase-result'));
                 Swal.fire({
                     title: 'Tente novamente!',
                     text: 'Você errou 10 frases, mas o importante é se divertir e aprender juntos! 💞',
@@ -289,13 +726,123 @@
                 document.getElementById('frase-acertos').textContent = fraseAcertos;
                 document.getElementById('frase-erros').textContent = fraseErros;
                 frasesRestantes = [...frases];
-                setTimeout(() => {
-                    document.getElementById('btn-comecar-frase').style.display = '';
-                }, 1800);
-                return;
+                // dica removida
+                // parar o jogo até o usuário iniciar novamente
+                fraseGameRunning = false;
+                setTimeout(() => { document.getElementById('btn-comecar-frase').style.display = ''; }, 1800);
             }
-            setTimeout(iniciarJogoFrase, 1600);
         }
+
+        function startFraseGame() {
+            // iniciado explicitamente pelo usuário
+            fraseGameRunning = true;
+            fraseAcertos = 0;
+            fraseErros = 0;
+            document.getElementById('frase-acertos').textContent = fraseAcertos;
+            document.getElementById('frase-erros').textContent = fraseErros;
+            frasesRestantes = [...frases];
+            iniciarJogoFrase();
+        }
+
+        // sem sons: não registramos cliques para tocar audio
+
+        // ------------------ Quebra-cabeça com fotos ------------------
+        (function(){
+            const puzzleImages = [
+                'image/WhatsApp Image 2025-10-22 at 09.59.08.jpeg',
+                'image/WhatsApp Image 2025-10-22 at 10.02.12.jpeg',
+                'image/WhatsApp Image 2025-10-22 at 10.03.12.jpeg',
+                'image/WhatsApp Image 2025-10-22 at 10.03.57.jpeg',
+                'image/WhatsApp Image 2025-10-22 at 10.04.24.jpeg'
+            ];
+            const sel = document.getElementById('puzzle-image-select');
+            puzzleImages.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p.split('/').pop(); sel.appendChild(o); });
+            // permitir trocar imagem durante o jogo: confirma reiniciar
+            sel.addEventListener('change', function(){
+                if (!window.puzzleState) return; // não há jogo em andamento
+                const newImg = sel.value;
+                Swal.fire({
+                    title: 'Trocar imagem?',
+                    text: 'Trocar a imagem reiniciará o quebra-cabeça atual. Deseja continuar?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, reiniciar',
+                    cancelButtonText: 'Cancelar'
+                }).then(res=>{
+                    if (res.isConfirmed) {
+                        // restart puzzle with new image
+                        buildPuzzle(newImg, window.puzzleState ? window.puzzleState.size : 4);
+                    } else {
+                        // revert selection back to previous image
+                        const prev = window.puzzleState ? window.puzzleState.img : puzzleImages[0];
+                        sel.value = prev;
+                    }
+                });
+            });
+
+            window.puzzleState = null;
+
+            window.startPuzzle = function(){
+                const selEl = document.getElementById('puzzle-image-select');
+                const img = (selEl && selEl.value) ? selEl.value : puzzleImages[0];
+                // tamanho fixo 4x4 conforme solicitação
+                const size = 4;
+                buildPuzzle(img,size);
+            };
+
+            function buildPuzzle(img,size){
+                const total = size*size;
+                const tiles = Array.from({length:total}, (_,i)=>({orig:i,cur:i}));
+                // shuffle cur positions
+                const idxs = Array.from({length:total}, (_,i)=>i);
+                for(let i=idxs.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idxs[i],idxs[j]]=[idxs[j],idxs[i]]; }
+                tiles.forEach((t,i)=> t.cur = idxs[i]);
+                window.puzzleState = { size, img, tiles, selectedIndex: null };
+
+                const area = document.getElementById('puzzle-area'); area.innerHTML=''; area.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+                for(let i=0;i<total;i++){
+                    const t = document.createElement('div');
+                    t.className='puzzle-tile'; t.dataset.i = i;
+                    t.style.backgroundImage = `url('${img}')`;
+                    t.style.backgroundSize = `${size*100}% ${size*100}%`;
+                    const posX = (tiles[i].cur % size) / (size-1) * 100;
+                    const posY = Math.floor(tiles[i].cur/size) / (size-1) * 100;
+                    t.style.backgroundPosition = `${posX}% ${posY}%`;
+                    t.style.minHeight = '80px'; t.style.borderRadius='8px'; t.style.cursor='pointer'; t.style.boxShadow='0 4px 14px #00000011';
+                    t.onclick = ()=> puzzleClick(i);
+                    area.appendChild(t);
+                }
+                document.getElementById('puzzle-result').textContent='';
+                // show shuffle (icon) button and hide start
+                const sh = document.getElementById('puzzle-shuffle-btn'); if (sh) sh.style.display='inline-block';
+                document.getElementById('puzzle-start-btn').style.display='none';
+                // avoid solved on shuffle
+                if (isPuzzleSolved()) shufflePuzzle();
+            }
+
+            function puzzleClick(i){
+                if (!window.puzzleState) return;
+                if (window.puzzleState.selectedIndex === null){ window.puzzleState.selectedIndex = i; highlight(i,true); return; }
+                const j = window.puzzleState.selectedIndex;
+                if (i===j){ highlight(j,false); window.puzzleState.selectedIndex=null; return; }
+                // swap
+                const tiles = window.puzzleState.tiles;
+                const tmp = tiles[i].cur; tiles[i].cur = tiles[j].cur; tiles[j].cur = tmp;
+                // update dom
+                const area = document.getElementById('puzzle-area'); const size = window.puzzleState.size;
+                [i,j].forEach(idx=>{ const el = area.children[idx]; const posX = (tiles[idx].cur % size) / (size-1) * 100; const posY = Math.floor(tiles[idx].cur/size) / (size-1) * 100; el.style.backgroundPosition = `${posX}% ${posY}%`; });
+                highlight(j,false); window.puzzleState.selectedIndex=null;
+                if (isPuzzleSolved()){ spawnConfetti({count:160, scale:1.3, duration:4200}); Swal.fire({ title:'Quebra-cabeça completo! 🧩', text:'Você montou a foto perfeita!', icon:'success', confirmButtonText:'Amei!' }); }
+            }
+
+            function highlight(i,on){ const el = document.getElementById('puzzle-area').children[i]; if (el){ el.classList.toggle('selected', !!on); } }
+            function isPuzzleSolved(){ if (!window.puzzleState) return false; return window.puzzleState.tiles.every((t,idx)=> t.cur === t.orig); }
+            function shufflePuzzle(){ if (!window.puzzleState) return; const total = window.puzzleState.size*window.puzzleState.size; const idxs = Array.from({length:total}, (_,i)=>i); for(let i=idxs.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idxs[i],idxs[j]]=[idxs[j],idxs[i]]; } window.puzzleState.tiles.forEach((t,i)=> t.cur = idxs[i]); // update dom
+                const area = document.getElementById('puzzle-area'); const size = window.puzzleState.size; for(let k=0;k<area.children.length;k++){ const el=area.children[k]; const posX = (window.puzzleState.tiles[k].cur % size) / (size-1) * 100; const posY = Math.floor(window.puzzleState.tiles[k].cur/size) / (size-1) * 100; el.style.backgroundPosition = `${posX}% ${posY}%`; }
+            }
+            // expose for debug
+            window.shufflePuzzle = shufflePuzzle;
+        })();
     </script>
 </body>
 </html>
