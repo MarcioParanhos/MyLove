@@ -3,13 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <title>Player de Músicas - Para Brenda</title>
     <style>
         :root{ --accent:#ff6b6b; --accent2:#d63384; --muted:#6c757d }
         *{box-sizing:border-box}
         html,body{height:100%; margin:0}
         body{font-family:Arial, Helvetica, sans-serif; background:linear-gradient(135deg,#ffecec,#fff7f8); display:flex; align-items:center; justify-content:center; padding:20px}
-    .card{ width:100%; max-width:760px; background:linear-gradient(180deg,#1e1e1f,#29292b); color:#fff; border-radius:18px; box-shadow:0 24px 60px rgba(0,0,0,0.28); padding:18px; }
+    .card{ width:100%; max-width:760px; background:linear-gradient(180deg,#1e1e1f,#29292b); color:#fff; border-radius:18px; box-shadow:0 24px 60px rgba(0,0,0,0.28); padding:18px; position:relative; z-index:2 }
         .header{ display:flex; gap:12px; align-items:center }
         /* improved back button */
         .back-btn{
@@ -26,6 +27,36 @@
         .back-btn .label{ display:inline-block }
         @media(max-width:420px){ .back-btn .label{ display:none } .back-btn{ padding:8px } }
         h2{ margin:0; color:var(--accent2) }
+        /* Page neon sign (behind everything) */
+        .page-neon{ position:fixed; inset:0; display:grid; place-items:center; pointer-events:none; z-index:0 }
+        .neon-text{ font-family: 'Pacifico', cursive; font-size:clamp(32px, 12vw, 140px); color:#ff99b3; opacity:0.12; transform:translateY(-20px); text-transform:none; letter-spacing:1px }
+        .neon-text{
+            text-shadow:
+                0 0 6px rgba(255,153,179,0.25),
+                0 0 18px rgba(214,51,132,0.18),
+                0 6px 30px rgba(0,0,0,0.45);
+        }
+        /* irregular flicker to simulate failing neon */
+        @keyframes neonFlicker {
+            0% { opacity:0.12; filter:blur(0.9px); }
+            3% { opacity:0.02; filter:blur(1.6px); }
+            6% { opacity:0.14; filter:blur(0.6px); }
+            9% { opacity:0.04; filter:blur(1.8px); }
+            12% { opacity:0.13; filter:blur(0.5px); }
+            20% { opacity:0.12; }
+            30% { opacity:0.16; }
+            33% { opacity:0.03; filter:blur(1.6px); }
+            36% { opacity:0.14; }
+            50% { opacity:0.12; }
+            60% { opacity:0.10; }
+            70% { opacity:0.14; }
+            75% { opacity:0.02; filter:blur(1.8px); }
+            80% { opacity:0.15; filter:blur(0.6px); }
+            90% { opacity:0.12; }
+            100% { opacity:0.12; }
+        }
+        @keyframes neonGlow { 0%{ filter:drop-shadow(0 0 6px rgba(255,153,179,0.15)); } 50%{ filter:drop-shadow(0 0 18px rgba(214,51,132,0.18)); } 100%{ filter:drop-shadow(0 0 6px rgba(255,153,179,0.15)); } }
+        .neon-text{ animation: neonFlicker 4.5s linear infinite, neonGlow 6s ease-in-out infinite }
     .player{ margin-top:14px; display:flex; flex-direction:column; gap:12px }
         .controls{ display:flex; gap:8px; align-items:center }
         .btn{ background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; border:0; padding:10px 14px; border-radius:10px; cursor:pointer }
@@ -53,6 +84,9 @@
     </style>
 </head>
 <body>
+    <div class="page-neon" aria-hidden="true">
+        <div class="neon-text">Brenda — Te amo</div>
+    </div>
     <div class="card">
         <div class="header">
             <a class="back-btn" href="index.html" aria-label="Voltar para a página inicial">
