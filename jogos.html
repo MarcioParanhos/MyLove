@@ -917,7 +917,7 @@
       let ordemSelecionada = [];
       let frasesRestantes = [];
       let fraseTimer = null;
-      let tempoTotal = 10; // segundos iniciais
+      let tempoTotal = 14; // segundos iniciais (aumentado para facilitar)
       let tempoAtual = 0;
       let dicaUsada = false;
       let fraseGameRunning = false; // bloqueia execuções automáticas até o usuário iniciar
@@ -926,8 +926,8 @@
         // esconder botão iniciar
         document.getElementById("btn-comecar-frase").style.display = "none";
         dicaUsada = false;
-        // ajustar dificuldade conforme acertos
-        tempoTotal = Math.max(4, 10 - Math.floor(fraseAcertos / 2)); // diminui o tempo a cada 2 acertos (base 10s, mínimo 4s)
+  // ajustar dificuldade conforme acertos (base maior e mínimo maior para facilitar)
+  tempoTotal = Math.max(6, 14 - Math.floor(fraseAcertos / 2)); // diminui o tempo a cada 2 acertos (base 14s, mínimo 6s)
         // número de decoys aumenta com acertos
         const decoysCount = Math.min(4, Math.floor(fraseAcertos / 3));
 
