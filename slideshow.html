@@ -1,445 +1,360 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nossas Memórias - Slideshow 💕</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root{
+            --bg-1: #0f1724;
+            --bg-2: #1f2a44;
+            --accent: #ff6b6b;
+            --muted: #cbd5e1;
+            --glass: rgba(255,255,255,0.06);
+            --card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family: Inter, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg,var(--bg-1),var(--bg-2));
+            color: #fff;
+            -webkit-font-smoothing:antialiased;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:28px;
+        }
+        .container{
+            width:100%;
+            max-width:980px;
+            border-radius:18px;
+            overflow:hidden;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            box-shadow: 0 20px 60px rgba(2,6,23,0.6);
+            position:relative;
+        }
+        .stage{
+            display:grid;
+            grid-template-columns: 1fr 420px;
+        }
+        @media (max-width:880px){
+            .stage{grid-template-columns:1fr}
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(45deg, #2c3e50, #34495e);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
+        .visual{
+            background: radial-gradient(1200px 400px at 10% 10%, rgba(255,107,107,0.06), transparent 10%), linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            padding:18px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-height:420px;
         }
 
-        .slideshow-container {
-            position: relative;
-            max-width: 800px;
-            width: 90%;
-            margin: auto;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        .slide{
+            width:100%;
+            max-height:560px;
+            border-radius:12px;
+            overflow:hidden;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:var(--card-bg);
+            padding:18px;
         }
 
-        @media (max-width: 768px) {
-            .slideshow-container {
-                width: 95%;
-                margin: 10px auto;
-            }
+        .slide img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            border-radius:10px;
+            box-shadow: 0 12px 30px rgba(2,6,23,0.45) inset;
         }
 
-        @media (max-width: 480px) {
-            .slideshow-container {
-                width: 98%;
-                margin: 5px auto;
-                border-radius: 15px;
-            }
+        .meta{
+            padding:28px 26px;
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+            align-items:flex-start;
+            justify-content:center;
+            background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);
         }
 
-        .slide {
-            display: none;
-            position: relative;
-            animation: fadeIn 1s ease-in-out;
+        .title{
+            font-size:1.6rem;
+            color:var(--accent);
+            font-weight:700;
+            letter-spacing:0.2px;
+        }
+        .text{
+            color:var(--muted);
+            line-height:1.6;
+            font-size:1rem;
         }
 
-        .slide.active {
-            display: block;
+        .controls{
+            width:100%;
+            display:flex;
+            gap:12px;
+            align-items:center;
+            justify-content:space-between;
+            margin-top:8px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+        .nav-group{display:flex; gap:12px; align-items:center}
+
+        .btn{
+            background:transparent;
+            border:1px solid rgba(255,255,255,0.06);
+            color:#fff;
+            padding:10px 14px;
+            border-radius:10px;
+            cursor:pointer;
+            transition: all 200ms ease;
+            backdrop-filter: blur(4px);
+        }
+        .btn:hover{transform:translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.35)}
+
+        .circle-btn{
+            width:52px; height:52px; border-radius:12px; display:inline-grid; place-items:center; font-size:1.2rem;
         }
 
-        .slide img {
-            width: 100%;
-            height: 500px;
-            object-fit: contain;
-            object-position: center;
-            border-radius: 15px 15px 0 0;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+        .dots{display:flex; gap:8px; align-items:center}
+        .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.12); cursor:pointer; transition:all 220ms}
+        .dot.active{background:var(--accent); transform:scale(1.25); box-shadow:0 8px 18px rgba(255,107,107,0.18)}
+
+        .counter{font-size:0.95rem; color:var(--muted); background:rgba(0,0,0,0.22); padding:8px 12px; border-radius:999px}
+
+        .back{
+            position:absolute; left:18px; top:18px; z-index:20; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:8px 12px; border-radius:12px; border:1px solid rgba(255,255,255,0.04);
         }
 
-        @media (max-width: 768px) {
-            .slide img {
-                height: 400px;
-            }
+        .music{
+            position:absolute; right:18px; bottom:18px; z-index:20; display:flex; gap:8px; align-items:center
         }
 
-        @media (max-width: 480px) {
-            .slide img {
-                height: 300px;
-            }
+        /* small screens tweaks */
+        @media (max-width:480px){
+            .meta{padding:18px}
+            .title{font-size:1.2rem}
+            .visual{min-height:300px}
+            .slide img{border-radius:8px}
+            .circle-btn{width:46px;height:46px}
         }
 
-        .slide-content {
-            padding: 30px;
-            text-align: center;
+        /* subtle entrance */
+        .fade{
+            animation: fadeIn 420ms ease;
         }
+        @keyframes fadeIn{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
 
-        @media (max-width: 768px) {
-            .slide-content {
-                padding: 25px 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .slide-content {
-                padding: 20px 15px;
-            }
-        }
-
-        .slide-title {
-            font-size: 2em;
-            color: #ff6b6b;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        @media (max-width: 768px) {
-            .slide-title {
-                font-size: 1.7em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .slide-title {
-                font-size: 1.4em;
-                margin-bottom: 10px;
-            }
-        }
-
-        .slide-text {
-            font-size: 1.2em;
-            line-height: 1.6;
-            color: #ecf0f1;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .slide-text {
-                font-size: 1.1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .slide-text {
-                font-size: 1em;
-                line-height: 1.5;
-            }
-        }
-
-        .navigation {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 107, 107, 0.8);
-            color: white;
-            border: none;
-            padding: 15px 20px;
-            font-size: 2em;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .navigation {
-                padding: 12px 16px;
-                font-size: 1.5em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .navigation {
-                padding: 10px 14px;
-                font-size: 1.3em;
-                top: 40%;
-            }
-            
-            .prev {
-                left: 10px !important;
-            }
-            
-            .next {
-                right: 10px !important;
-            }
-        }
-
-        .navigation:hover {
-            background: rgba(255, 107, 107, 1);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .prev {
-            left: 20px;
-        }
-
-        .next {
-            right: 20px;
-        }
-
-        .dots-container {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .dot {
-            cursor: pointer;
-            height: 15px;
-            width: 15px;
-            margin: 0 5px;
-            background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active,
-        .dot:hover {
-            background-color: #ff6b6b;
-            transform: scale(1.2);
-        }
-
-        .slide-counter {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 1em;
-            z-index: 10;
-        }
-
-        @media (max-width: 480px) {
-            .slide-counter {
-                top: 10px;
-                right: 10px;
-                padding: 8px 12px;
-                font-size: 0.9em;
-            }
-        }
-
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 107, 107, 0.9);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        @media (max-width: 480px) {
-            .back-button {
-                top: 10px;
-                left: 10px;
-                padding: 8px 15px;
-                font-size: 0.9em;
-            }
-        }
-
-        .back-button:hover {
-            background: rgba(255, 107, 107, 1);
-            transform: scale(1.05);
-        }
-
-        .music-control {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 107, 107, 0.9);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: all 0.3s ease;
-        }
-
-        .music-control:hover {
-            transform: scale(1.1);
-        }
-
+        /* Galeria modal styles */
+        #galleryModal{position:fixed; inset:0; display:none; place-items:center; z-index:60}
+        #galleryModal.active{display:grid}
+        .gallery-overlay{position:fixed; inset:0; background:rgba(2,6,23,0.6)}
+        .gallery-panel{position:relative; width:min(980px,96%); max-height:86vh; overflow:auto; background:linear-gradient(180deg,#071124, #0b1530); border-radius:12px; padding:18px; box-shadow:0 30px 80px rgba(2,6,23,0.7); display:flex; gap:12px; align-items:flex-start}
+        .gallery-preview{flex:1; display:flex; flex-direction:column; align-items:center; gap:8px}
+        .gallery-preview img{max-width:100%; max-height:60vh; border-radius:10px; object-fit:contain}
+        .gallery-thumbs{width:320px; display:flex; flex-direction:column; gap:8px; overflow:auto; padding-right:6px}
+        .gallery-thumb{width:100%; display:grid; grid-template-columns: 1fr 48px; gap:8px; align-items:center; padding:8px; border-radius:8px; cursor:pointer; background:rgba(255,255,255,0.02)}
+        .gallery-thumb img{width:100%; height:70px; object-fit:cover; border-radius:6px}
+        .gallery-thumb.active{box-shadow:0 12px 30px rgba(255,107,107,0.12); border:1px solid rgba(255,107,107,0.12)}
+        @media(max-width:880px){ .gallery-panel{flex-direction:column} .gallery-thumbs{width:100%; flex-direction:row; overflow:auto} .gallery-thumb{width:180px; grid-template-columns: 1fr} }
 
     </style>
 </head>
 <body>
-    <div class="slideshow-container">
-        <button class="back-button" onclick="voltarInicio()">← Voltar</button>
-        <div class="slide-counter">
-            <span id="currentSlide">1</span> / <span id="totalSlides">5</span>
-        </div>
-        <button class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</button>
+    <div class="container fade" role="region" aria-label="Slideshow de memórias">
+        <button class="back btn back" onclick="voltarInicio()">← Voltar</button>
+        <div class="stage">
+            <div class="visual">
+                <div id="slideWrapper" class="slide">
+                    <img id="mainImg" src="./image/WhatsApp Image 2025-10-22 at 09.59.08.jpeg" alt="Nossa Primeira Foto">
+                </div>
+            </div>
+            <div class="meta">
+                <div style="display:flex; align-items:center; width:100%; justify-content:space-between">
+                    <div>
+                        <div id="slideTitle" class="title">O Começo de Tudo 💕</div>
+                        <div id="slideText" class="text">Lembra deste momento, amor? Foi quando nossa história de amor começou... Cada sorriso seu já sabia que será especial! ✨</div>
+                    </div>
+                    <div class="counter" aria-live="polite"><span id="currentSlide">1</span> / <span id="totalSlides">5</span></div>
+                </div>
 
-        <!-- Slide 1 -->
-        <div class="slide active">
-            <img src="./image/WhatsApp Image 2025-10-22 at 09.59.08.jpeg" alt="Nossa Primeira Foto">
-            <div class="slide-content">
-                <div class="slide-title">O Começo de Tudo 💕</div>
-                <div class="slide-text">
-                    Lembra deste momento, amor? Foi quando nossa história de amor começou... 
-                    Cada sorriso seu já sabia que será especial! ✨
+                <div class="controls">
+                    <div class="nav-group">
+                        <button class="btn circle-btn prev" aria-label="Anterior" onclick="mudarSlide(-1)">❮</button>
+                        <button class="btn circle-btn next" aria-label="Próximo" onclick="mudarSlide(1)">❯</button>
+                        <div class="dots" id="dots"></div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; align-items:center">
+                        <button id="playBtn" class="btn" onclick="toggleAuto()">▶ Auto</button>
+                        <button id="musicBtn" class="btn" onclick="toggleMusic()">🎵</button>
+                    </div>
+                </div>
+
+                <div style="margin-top:8px; width:100%; display:flex; gap:10px; align-items:center">
+                    <button class="btn" onclick="openGallery()">Ver todas as fotos</button>
+                    <div style="flex:1"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 2 -->
-        <div class="slide">
-            <img src="./image/WhatsApp Image 2025-10-22 at 10.02.12.jpeg" alt="Nosso Primeiro Encontro">
-            <div class="slide-content">
-                <div class="slide-title">Primeiro Encontro 🌟</div>
-                <div class="slide-text">
-                    Que nervoso eu estava! Mas você me deixou tão à vontade... 
-                    Foi nesse dia que soube que você era especial demais! 💖
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="slide">
-            <img src="./image/WhatsApp Image 2025-10-22 at 10.03.12.jpeg" alt="Comemorando Juntos">
-            <div class="slide-content">
-                <div class="slide-title">Momentos de Alegria 🎊</div>
-                <div class="slide-text">
-                    Cada comemoração fica mais especial ao seu lado, meu amor! 
-                    Você torna cada dia uma festa! 🥳💕
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 4 -->
-        <div class="slide">
-            <img src="./image/WhatsApp Image 2025-10-22 at 10.03.57.jpeg" alt="Nossos Momentos Lindos">
-            <div class="slide-content">
-                <div class="slide-title">Nossos momentos lindos 🌄</div>
-                <div class="slide-text">
-                    Cada novo dia ao seu lado é uma benção, Brenda. 
-                    Você é minha luz, meu sol, minha inspiração! ☀️💛
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 5 -->
-        <div class="slide">
-            <img src="./image/WhatsApp Image 2025-10-22 at 10.04.24.jpeg" alt="Para Sempre">
-            <div class="slide-content">
-                <div class="slide-title">Para Sempre 💍</div>
-                <div class="slide-text">
-                    Esta é nossa história, Brenda, e mal posso esperar para escrever 
-                    muito mais capítulos ao seu lado. Te amo infinitamente! 💕∞
-                </div>
-            </div>
-        </div>
-
-        <!-- Navegação -->
-        <button class="navigation prev" onclick="mudarSlide(-1)">❮</button>
-        <button class="navigation next" onclick="mudarSlide(1)">❯</button>
-
-        <!-- Pontos indicadores -->
-        <div class="dots-container">
-            <span class="dot active" onclick="slideAtual(1)"></span>
-            <span class="dot" onclick="slideAtual(2)"></span>
-            <span class="dot" onclick="slideAtual(3)"></span>
-            <span class="dot" onclick="slideAtual(4)"></span>
-            <span class="dot" onclick="slideAtual(5)"></span>
+        <div class="music" role="status" aria-live="polite">
+            <audio id="backgroundMusic" loop preload="none">
+                <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/mpeg">
+            </audio>
         </div>
     </div>
 
-    <!-- Áudio de fundo -->
-    <audio id="backgroundMusic" loop>
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/mpeg">
-        <!-- Você pode substituir por uma música romântica de sua escolha -->
-    </audio>
+        <!-- Galeria Modal -->
+    <div id="galleryModal" aria-hidden="true">
+            <div class="gallery-overlay" onclick="closeGallery()" aria-hidden="true"></div>
+            <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="Galeria de fotos">
+                <button class="btn" style="position:absolute; right:14px; top:14px;" onclick="closeGallery()">Fechar ✕</button>
+                <div class="gallery-preview">
+                    <img id="galleryLarge" src="" alt="Pré-visualização" />
+                    <div style="margin-top:8px; display:flex; gap:8px; justify-content:center">
+                        <button class="btn" id="useImageBtn">Usar esta foto</button>
+                    </div>
+                </div>
+                <div class="gallery-thumbs" id="galleryThumbs" aria-label="Miniaturas"></div>
+            </div>
+        </div>
 
     <script>
-        let slideIndex = 1;
-        let isPlaying = false;
-        const totalSlides = document.querySelectorAll('.slide').length;
-        document.getElementById('totalSlides').textContent = totalSlides;
+        // slides data (title, text, src)
+        const slides = [
+            { src: './image/WhatsApp Image 2025-10-22 at 09.59.08.jpeg', title: 'O Começo de Tudo 💕', text: 'Lembra deste momento, amor? Foi quando nossa história de amor começou... Cada sorriso seu já sabia que será especial! ✨' },
+            { src: './image/WhatsApp Image 2025-10-22 at 10.02.12.jpeg', title: 'Primeiro Encontro 🌟', text: 'Que nervoso eu estava! Mas você me deixou tão à vontade... Foi nesse dia que soube que você era especial demais! 💖' },
+            { src: './image/WhatsApp Image 2025-10-22 at 10.03.12.jpeg', title: 'Momentos de Alegria 🎊', text: 'Cada comemoração fica mais especial ao seu lado, meu amor! Você torna cada dia uma festa! 🥳💕' },
+            { src: './image/WhatsApp Image 2025-10-22 at 10.03.57.jpeg', title: 'Nossos momentos lindos 🌄', text: 'Cada novo dia ao seu lado é uma benção, Brenda. Você é minha luz, meu sol, minha inspiração! ☀️💛' },
+            { src: './image/WhatsApp Image 2025-10-22 at 10.04.24.jpeg', title: 'Para Sempre 💍', text: 'Esta é nossa história, Brenda, e mal posso esperar para escrever muito mais capítulos ao seu lado. Te amo infinitamente! 💕∞' }
+        ];
 
-        function mudarSlide(n) {
-            mostrarSlide(slideIndex += n);
+        const mainImg = document.getElementById('mainImg');
+        const slideTitle = document.getElementById('slideTitle');
+        const slideText = document.getElementById('slideText');
+        const currentSlideEl = document.getElementById('currentSlide');
+        const totalSlidesEl = document.getElementById('totalSlides');
+        const dotsContainer = document.getElementById('dots');
+        const playBtn = document.getElementById('playBtn');
+        const music = document.getElementById('backgroundMusic');
+
+        let index = 0;
+        let autoPlayInterval = null;
+        let isAuto = false;
+        let isPlayingMusic = false;
+
+        function renderDots(){
+            dotsContainer.innerHTML = '';
+            slides.forEach((s,i)=>{
+                const d = document.createElement('div');
+                d.className = 'dot' + (i===index? ' active':'');
+                d.title = (i+1) + 'ª foto';
+                d.addEventListener('click', ()=>{ goToSlide(i+1) });
+                dotsContainer.appendChild(d);
+            });
         }
 
-        function slideAtual(n) {
-            mostrarSlide(slideIndex = n);
+        function updateUI(){
+            const s = slides[index];
+            mainImg.src = s.src;
+            mainImg.alt = s.title;
+            slideTitle.textContent = s.title;
+            slideText.textContent = s.text;
+            currentSlideEl.textContent = index+1;
+            totalSlidesEl.textContent = slides.length;
+            // update dots
+            const dots = dotsContainer.querySelectorAll('.dot');
+            dots.forEach((d,i)=> d.classList.toggle('active', i===index));
         }
 
-        function mostrarSlide(n) {
-            const slides = document.querySelectorAll('.slide');
-            const dots = document.querySelectorAll('.dot');
-            
-            if (n > slides.length) { slideIndex = 1; }
-            if (n < 1) { slideIndex = slides.length; }
-            
-            slides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            
-            slides[slideIndex - 1].classList.add('active');
-            dots[slideIndex - 1].classList.add('active');
-            
-            document.getElementById('currentSlide').textContent = slideIndex;
+        function goToSlide(n){
+            index = Math.max(0, Math.min(slides.length-1, n-1));
+            updateUI();
         }
 
-        function voltarInicio() {
-            window.location.href = 'index.html';
+        function mudarSlide(delta){
+            index = (index + delta + slides.length) % slides.length;
+            updateUI();
         }
 
-        function toggleMusic() {
-            const music = document.getElementById('backgroundMusic');
-            const btn = document.getElementById('musicBtn');
-            
-            if (isPlaying) {
-                music.pause();
-                btn.textContent = '🎵';
-                isPlaying = false;
+        function toggleAuto(){
+            if(isAuto){
+                clearInterval(autoPlayInterval); autoPlayInterval = null; isAuto=false; playBtn.textContent='▶ Auto';
             } else {
-                music.play();
-                btn.textContent = '🔇';
-                isPlaying = true;
+                autoPlayInterval = setInterval(()=> mudarSlide(1), 5000); isAuto=true; playBtn.textContent='■ Pausar';
             }
         }
 
-        // Auto-play slideshow (opcional)
-        function autoSlide() {
-            slideIndex++;
-            if (slideIndex > totalSlides) {
-                slideIndex = 1;
-            }
-            mostrarSlide(slideIndex);
+        function toggleMusic(){
+            if(isPlayingMusic){ music.pause(); isPlayingMusic=false; document.getElementById('musicBtn').textContent='🎵'; }
+            else { music.play().catch(()=>{}); isPlayingMusic=true; document.getElementById('musicBtn').textContent='🔇'; }
         }
 
-        // Descomente a linha abaixo para ativar o auto-play a cada 5 segundos
-        // setInterval(autoSlide, 5000);
+        function voltarInicio(){ window.location.href='index.html'; }
 
-        // Controles do teclado
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'ArrowLeft') {
-                mudarSlide(-1);
-            } else if (event.key === 'ArrowRight') {
-                mudarSlide(1);
-            }
+        // keyboard nav
+        document.addEventListener('keydown',(e)=>{
+            if(e.key==='ArrowLeft') mudarSlide(-1);
+            if(e.key==='ArrowRight') mudarSlide(1);
         });
+
+        // --- Gallery logic ---
+        const galleryModal = document.getElementById('galleryModal');
+        const galleryThumbs = document.getElementById('galleryThumbs');
+        const galleryLarge = document.getElementById('galleryLarge');
+        const useImageBtn = document.getElementById('useImageBtn');
+        let gallerySelected = 0;
+
+        function openGallery(){
+            // populate thumbs
+            galleryThumbs.innerHTML = '';
+            slides.forEach((s,i)=>{
+                const item = document.createElement('div');
+                item.className = 'gallery-thumb' + (i===gallerySelected? ' active':'');
+                const img = document.createElement('img'); img.src = s.src; img.alt = s.title;
+                const meta = document.createElement('div'); meta.style.fontSize='0.9rem'; meta.style.color='var(--muted)'; meta.textContent = s.title;
+                const btn = document.createElement('div'); btn.innerHTML = (i+1);
+                item.appendChild(img);
+                item.appendChild(meta);
+                item.addEventListener('click', ()=> selectGallery(i));
+                galleryThumbs.appendChild(item);
+            });
+            selectGallery(gallerySelected);
+            galleryModal.classList.add('active');
+            galleryModal.setAttribute('aria-hidden','false');
+        }
+
+        function closeGallery(){
+            galleryModal.classList.remove('active');
+            galleryModal.setAttribute('aria-hidden','true');
+        }
+
+        function selectGallery(i){
+            gallerySelected = i;
+            const s = slides[i];
+            galleryLarge.src = s.src;
+            galleryLarge.alt = s.title;
+            // highlight thumb
+            Array.from(galleryThumbs.children).forEach((ch,idx)=>{
+                ch.classList.toggle('active', idx===i);
+            });
+        }
+
+        useImageBtn.addEventListener('click', ()=>{
+            // apply selected image to slideshow
+            closeGallery();
+            goToSlide(gallerySelected+1);
+        });
+
+        // init
+        renderDots(); updateUI();
+
     </script>
 </body>
 </html>
