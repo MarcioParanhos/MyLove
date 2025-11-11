@@ -11,7 +11,20 @@
         body{font-family:Arial, Helvetica, sans-serif; background:linear-gradient(135deg,#ffecec,#fff7f8); display:flex; align-items:center; justify-content:center; padding:20px}
         .card{ width:100%; max-width:760px; background:#fff; border-radius:14px; box-shadow:0 18px 50px rgba(0,0,0,0.12); padding:18px; }
         .header{ display:flex; gap:12px; align-items:center }
-        .back-btn{ background:transparent; border:0; color:var(--accent2); font-weight:700; cursor:pointer }
+        /* improved back button */
+        .back-btn{
+            display:inline-flex; align-items:center; gap:8px;
+            background:linear-gradient(135deg,#fff,#fff);
+            color:var(--accent2); border:1px solid rgba(0,0,0,0.06);
+            padding:8px 12px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.06);
+            cursor:pointer; transition:transform 120ms ease, box-shadow 120ms ease, background 160ms ease;
+            text-decoration:none; font-weight:700;
+        }
+        .back-btn svg{ width:18px; height:18px; transform:translateX(-1px); }
+        .back-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,0.12); background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; }
+        .back-btn:focus{ outline:3px solid rgba(214,51,132,0.15); outline-offset:2px; }
+        .back-btn .label{ display:inline-block }
+        @media(max-width:420px){ .back-btn .label{ display:none } .back-btn{ padding:8px } }
         h2{ margin:0; color:var(--accent2) }
         .player{ margin-top:14px; display:flex; flex-direction:column; gap:10px }
         .controls{ display:flex; gap:8px; align-items:center }
@@ -33,7 +46,12 @@
 <body>
     <div class="card">
         <div class="header">
-            <button class="back-btn" onclick="location.href='index.html'">← Voltar</button>
+            <a class="back-btn" href="index.html" aria-label="Voltar para a página inicial">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span class="label">Voltar</span>
+            </a>
             <h2>Player de Músicas</h2>
         </div>
 
