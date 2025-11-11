@@ -9,8 +9,8 @@
         :root{ --accent:#ff6b6b; --accent2:#d63384; --muted:#6c757d }
         *{box-sizing:border-box}
         html,body{height:100%; margin:0}
-        body{font-family:Arial, Helvetica, sans-serif; background:linear-gradient(135deg,#ffecec,#fff7f8); display:flex; align-items:center; justify-content:center; padding:20px}
-    .card{ width:100%; max-width:760px; background:linear-gradient(180deg,#1e1e1f,#29292b); color:#fff; border-radius:18px; box-shadow:0 24px 60px rgba(0,0,0,0.28); padding:18px; position:relative; z-index:2 }
+    body{font-family:Arial, Helvetica, sans-serif; background:#fef2f3; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:36px 20px}
+    .card{ width:100%; max-width:760px; background:linear-gradient(180deg,rgba(30,30,31,0.95),rgba(41,41,43,0.95)); color:#fff; border-radius:18px; box-shadow:0 24px 60px rgba(0,0,0,0.28); padding:18px; position:relative; z-index:2; margin-top:6px }
         .header{ display:flex; gap:12px; align-items:center }
         /* improved back button */
         .back-btn{
@@ -27,14 +27,14 @@
         .back-btn .label{ display:inline-block }
         @media(max-width:420px){ .back-btn .label{ display:none } .back-btn{ padding:8px } }
         h2{ margin:0; color:var(--accent2) }
-        /* Page neon sign (behind everything) */
-        .page-neon{ position:fixed; inset:0; display:grid; place-items:center; pointer-events:none; z-index:0 }
-        .neon-text{ font-family: 'Pacifico', cursive; font-size:clamp(32px, 12vw, 140px); color:#ff99b3; opacity:0.12; transform:translateY(-20px); text-transform:none; letter-spacing:1px }
+    /* Page neon sign as a normal block above the player */
+    .page-neon{ position:relative; display:flex; width:100%; justify-content:center; align-items:center; margin-bottom:18px; pointer-events:none; z-index:1 }
+    .neon-text{ font-family: 'Pacifico', cursive; font-size:clamp(32px, 10vw, 140px); color:#ff1e6a; opacity:0.95; text-transform:none; letter-spacing:1px; mix-blend-mode:normal; pointer-events:none }
         .neon-text{
             text-shadow:
-                0 0 6px rgba(255,153,179,0.25),
-                0 0 18px rgba(214,51,132,0.18),
-                0 6px 30px rgba(0,0,0,0.45);
+                0 0 12px rgba(255,41,112,0.45),
+                0 0 36px rgba(214,51,132,0.36),
+                0 12px 48px rgba(0,0,0,0.28);
         }
         /* irregular flicker to simulate failing neon */
         @keyframes neonFlicker {
@@ -55,8 +55,11 @@
             90% { opacity:0.12; }
             100% { opacity:0.12; }
         }
-        @keyframes neonGlow { 0%{ filter:drop-shadow(0 0 6px rgba(255,153,179,0.15)); } 50%{ filter:drop-shadow(0 0 18px rgba(214,51,132,0.18)); } 100%{ filter:drop-shadow(0 0 6px rgba(255,153,179,0.15)); } }
-        .neon-text{ animation: neonFlicker 4.5s linear infinite, neonGlow 6s ease-in-out infinite }
+        @keyframes neonGlow { 0%{ filter:drop-shadow(0 0 10px rgba(255,153,179,0.2)); } 50%{ filter:drop-shadow(0 0 28px rgba(214,51,132,0.32)); } 100%{ filter:drop-shadow(0 0 10px rgba(255,153,179,0.2)); } }
+        .neon-text{ animation: neonFlicker 5.2s linear infinite, neonGlow 7.5s ease-in-out infinite }
+        .neon-text{ filter: saturate(1.2); }
+        /* ensure it doesn't capture pointer events and remains visible above card */
+        .page-neon, .neon-text{ pointer-events:none }
     .player{ margin-top:14px; display:flex; flex-direction:column; gap:12px }
         .controls{ display:flex; gap:8px; align-items:center }
         .btn{ background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; border:0; padding:10px 14px; border-radius:10px; cursor:pointer }
@@ -81,11 +84,25 @@
     .item .name{ font-weight:700; color:#fff }
         .small{ font-size:0.86rem; color:var(--muted) }
     @media(max-width:520px){ .card{ padding:12px } .btn{ padding:8px 10px } .btn.icon{ width:40px;height:40px } .art{ width:110px;height:110px } .big-btn{ width:56px;height:56px } }
+    /* hearts overlay */
+    #hearts-root{ pointer-events:none; position:fixed; inset:0; z-index:6; overflow:hidden }
+    .heart{
+        position:absolute; bottom:-40px; width:36px; height:36px; transform:translateY(0) rotate(0deg);
+        animation: floatUp 6s linear forwards; opacity:0.95;
+        display:grid; place-items:center;
+    }
+    .heart svg{ width:100%; height:100%; filter:drop-shadow(0 6px 12px rgba(214,51,132,0.2)); }
+    @keyframes floatUp{
+        0%{ transform:translateY(0) scale(0.9); opacity:0.95; }
+        10%{ transform:translateY(-40px) scale(1); }
+        60%{ transform:translateY(-360px) rotate(-12deg); opacity:0.9; }
+        100%{ transform:translateY(-600px) rotate(8deg); opacity:0; }
+    }
     </style>
 </head>
 <body>
     <div class="page-neon" aria-hidden="true">
-        <div class="neon-text">Brenda — Te amo</div>
+        <div class="neon-text">Brenda eu te amo</div>
     </div>
     <div class="card">
         <div class="header">
@@ -132,6 +149,8 @@
                     <div id="yt-player" style="display:none"></div>
         </div>
     </div>
+    <!-- hearts overlay -->
+    <div id="hearts-root" aria-hidden="true"></div>
         </script>
         <!-- YouTube IFrame API -->
         <script src="https://www.youtube.com/iframe_api"></script>
@@ -268,6 +287,25 @@
             render();
             if(playlist.length>0){ titleEl.textContent = playlist[0].title; subEl.textContent='Pronto'; }
 
+        })();
+    
+        // hearts animation: spawn hearts periodically
+        (function(){
+            const root = document.getElementById('hearts-root');
+            if(!root) return;
+            function spawnHeart(){
+                const el = document.createElement('div'); el.className='heart';
+                const size = 20 + Math.floor(Math.random()*36);
+                el.style.width = size+'px'; el.style.height = size+'px';
+                el.style.left = (10 + Math.random()*80)+'%';
+                el.style.bottom = '-40px';
+                const hue = 330 + Math.floor(Math.random()*30);
+                el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.8 6.6c-1.5-3-5.6-3.4-7.7-.9-2.2-2.5-6.2-2.1-7.7.9-1.8 3.6.4 7.9 3.9 10.8 1.7 1.4 3.7 2.6 4.8 2.6 1.1 0 3.2-1.1 4.8-2.6 3.5-2.9 5.7-7.2 3.9-10.8z" fill="hsl(${hue} 80% 62%)"/></svg>`;
+                root.appendChild(el);
+                // remove after animation
+                el.addEventListener('animationend', ()=> el.remove());
+            }
+            setInterval(spawnHeart, 800);
         })();
         </script>
 </body>
